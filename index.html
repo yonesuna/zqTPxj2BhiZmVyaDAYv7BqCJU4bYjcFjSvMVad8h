@@ -1,0 +1,2165 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ワールドカップ2026 予想サイト</title>
+  <style>
+    :root {
+      --bg: #f4f6fb;
+      --card: #ffffff;
+      --text: #16223a;
+      --muted: #5b6b8c;
+      --line: #d9e1f2;
+      --accent: #104b9b;
+      --accent-2: #0d8a4f;
+      --warn: #b45309;
+      --danger: #b42318;
+      --good: #027a48;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", "Yu Gothic UI", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 15% -10%, #dbeafe 0%, transparent 45%),
+        radial-gradient(circle at 85% -20%, #dcfce7 0%, transparent 35%),
+        var(--bg);
+    }
+
+    header {
+      padding: 20px 16px;
+      background: linear-gradient(120deg, #0b2d61, #1d4f9a);
+      color: #fff;
+      border-bottom: 4px solid #f6c343;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 1.5rem;
+      letter-spacing: 0.02em;
+    }
+
+    .sub {
+      margin-top: 6px;
+      opacity: 0.9;
+      font-size: 0.9rem;
+    }
+
+    .top-nav {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--line);
+      background: #f8faff;
+      position: sticky;
+      top: 0;
+      z-index: 3;
+    }
+
+    .top-nav button {
+      color: var(--accent);
+      border: 1px solid #c9d8f6;
+      border-radius: 999px;
+      padding: 6px 12px;
+      font-size: 0.84rem;
+      font-weight: 600;
+      background: #fff;
+      cursor: pointer;
+    }
+
+    .top-nav button.active {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+    }
+
+    .top-nav button:hover {
+      filter: brightness(0.96);
+    }
+
+    .tab-section {
+      display: none;
+    }
+
+    .tab-section.active {
+      display: block;
+    }
+
+    main {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 16px;
+      display: grid;
+      gap: 14px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      box-shadow: 0 4px 18px rgba(20, 46, 94, 0.06);
+      padding: 14px;
+    }
+
+    .card h2 {
+      margin: 0 0 10px;
+      font-size: 1.1rem;
+      color: #173a73;
+    }
+
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .meta {
+      border: 1px solid var(--line);
+      background: #f8fbff;
+      border-radius: 10px;
+      padding: 10px;
+      font-size: 0.86rem;
+      color: var(--muted);
+    }
+
+    .meta strong {
+      color: #173a73;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th,
+    td {
+      border-bottom: 1px solid #ecf1fa;
+      padding: 8px;
+      text-align: left;
+      font-size: 0.84rem;
+      vertical-align: middle;
+    }
+
+    th {
+      background: #edf3ff;
+      color: #123d7a;
+      font-weight: 700;
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
+
+    .table-wrap {
+      overflow: auto;
+      max-height: 480px;
+      border: 1px solid #e4eaf8;
+      border-radius: 10px;
+    }
+
+    .participant-points-list {
+      display: grid;
+      gap: 12px;
+      margin-top: 10px;
+    }
+
+    .participant-points-card {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: #f8fbff;
+      padding: 10px;
+    }
+
+    .participant-points-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 8px;
+    }
+
+    .participant-name {
+      font-weight: 700;
+      color: #123d7a;
+    }
+
+    .participant-total {
+      font-weight: 800;
+      color: #173a73;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .participant-points-card .table-wrap {
+      max-height: none;
+      background: #fff;
+    }
+
+    .num {
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .center {
+      text-align: center;
+    }
+
+    input[type="text"],
+    select {
+      width: 100%;
+      min-width: 130px;
+      border: 1px solid #cbd7ef;
+      border-radius: 6px;
+      padding: 6px 8px;
+      font-size: 0.84rem;
+      background: #fff;
+    }
+
+    input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      accent-color: var(--accent);
+      cursor: pointer;
+    }
+
+    select[multiple] {
+      min-height: 180px;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 180px;
+      border: 1px solid #cbd7ef;
+      border-radius: 8px;
+      padding: 8px 10px;
+      font-size: 0.82rem;
+      font-family: Consolas, "Courier New", monospace;
+      line-height: 1.4;
+      resize: vertical;
+      background: #fff;
+    }
+
+    .incomplete {
+      background: #fffaf0;
+    }
+
+    .confirmed-row {
+      background: #ecfdf3;
+    }
+
+    .results-groups {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .result-group-card {
+      border: 1px solid #e4eaf8;
+      border-radius: 10px;
+      overflow: hidden;
+      background: #fff;
+    }
+
+    .result-group-head {
+      padding: 8px 10px;
+      font-size: 0.84rem;
+      font-weight: 700;
+      color: #123d7a;
+      border-bottom: 1px solid #e4eaf8;
+    }
+
+    .result-group-card .table-wrap {
+      max-height: none;
+      border: 0;
+      border-radius: 0;
+    }
+
+    .result-group-card.group-bg-1 .result-group-head { background: #f8fbff; }
+    .result-group-card.group-bg-2 .result-group-head { background: #f8fff7; }
+    .result-group-card.group-bg-3 .result-group-head { background: #fffaf5; }
+    .result-group-card.group-bg-4 .result-group-head { background: #f9f8ff; }
+    .result-group-card.group-bg-5 .result-group-head { background: #f6fcfb; }
+    .result-group-card.group-bg-6 .result-group-head { background: #fff8fb; }
+    .result-group-card.group-bg-7 .result-group-head { background: #f7fafc; }
+    .result-group-card.group-bg-8 .result-group-head { background: #fffdf4; }
+    .result-group-card.group-bg-9 .result-group-head { background: #f5fff9; }
+    .result-group-card.group-bg-10 .result-group-head { background: #f8f8f8; }
+    .result-group-card.group-bg-11 .result-group-head { background: #f4fbff; }
+    .result-group-card.group-bg-12 .result-group-head { background: #fff9f2; }
+
+    .actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+
+    button {
+      border: 0;
+      border-radius: 8px;
+      padding: 8px 14px;
+      font-size: 0.84rem;
+      font-weight: 700;
+      cursor: pointer;
+      color: #fff;
+      background: var(--accent);
+    }
+
+    button.secondary {
+      background: var(--accent-2);
+    }
+
+    button.ghost {
+      background: #6b7280;
+    }
+
+    .status {
+      margin-top: 8px;
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+
+    .status.good {
+      color: var(--good);
+      font-weight: 700;
+    }
+
+    .status.warn {
+      color: var(--warn);
+      font-weight: 700;
+    }
+
+    .status.error {
+      color: var(--danger);
+      font-weight: 700;
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      background: #e8f0ff;
+      color: #113e7a;
+    }
+
+    .chip-over {
+      color: var(--danger);
+      font-weight: 800;
+    }
+
+    .ranking-row-top1 td {
+      font-size: 1.16rem;
+      background: #ffd700;
+    }
+
+    .ranking-row-top2 td {
+      font-size: 0.94rem;
+      background: #c0c0c0;
+    }
+
+    .issues {
+      margin: 8px 0 0;
+      padding-left: 16px;
+      color: var(--danger);
+      font-size: 0.82rem;
+    }
+
+    .flash {
+      position: fixed;
+      right: 12px;
+      bottom: 12px;
+      background: #173a73;
+      color: #fff;
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: 0.82rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s;
+    }
+
+    .flash.show {
+      opacity: 1;
+    }
+
+    .global-error {
+      display: none;
+      margin: 12px 16px 0;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid #f0c2bf;
+      background: #fff5f4;
+      color: var(--danger);
+      font-size: 0.84rem;
+      font-weight: 700;
+    }
+
+    .global-error.show {
+      display: block;
+    }
+
+    @media (max-width: 820px) {
+      .results-groups {
+        grid-template-columns: 1fr;
+      }
+
+      .table-wrap {
+        max-height: 420px;
+      }
+
+      th,
+      td {
+        font-size: 0.8rem;
+      }
+
+      input[type="text"],
+      select {
+        min-width: 110px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>ワールドカップ2026 予想サイト</h1>
+    <div class="sub">48チーム / 12人参加 / 1人4チーム選択 / お気に入り1チーム</div>
+  </header>
+
+  <div id="global-error" class="global-error"></div>
+
+  <nav class="top-nav">
+    <button type="button" class="active" data-tab-btn="ranking" onclick="showTab('ranking')">順位表</button>
+    <button type="button" data-tab-btn="team-points" onclick="showTab('team-points')">ポイント表</button>
+    <button type="button" data-tab-btn="results" onclick="showTab('results')">結果入力</button>
+    <button type="button" data-tab-btn="picks" onclick="showTab('picks')">選択チーム</button>
+    <button type="button" data-tab-btn="rules" onclick="showTab('rules')">採点ルール</button>
+  </nav>
+
+  <main>
+    <section class="card tab-section" data-tab="rules">
+      <h2>採点ルール</h2>
+      <div class="meta-grid">
+        <div class="meta">
+          <strong>順位pt</strong><br />
+          優勝 12 / 準優勝 7 / 3位 5 / 4位 4 / best8 3 / best16 2 / best32 1
+        </div>
+        <div class="meta">
+          <strong>重み付けpt(倍率)</strong><br />
+          ポット1(開催国) 2.5 / ポット1(開催国以外) 1.5 / ポット2 3 / ポット3 7 / ポット4(EURO) 3 / ポット4(EURO以外) 13
+        </div>
+        <div class="meta">
+          <strong>お気に入りpt(倍率)</strong><br />
+          お気に入り 2 / お気に入り以外 1
+        </div>
+        <div class="meta">
+          <strong>計算式</strong><br />
+          チームpt = 順位pt × 重み付け倍率 × お気に入り倍率
+        </div>
+      </div>
+      <div id="app-status" class="status">初期化中...</div>
+    </section>
+
+    <section id="picks" class="card tab-section" data-tab="picks">
+      <h2>選択チーム</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th class="center">No</th>
+              <th>参加者名</th>
+              <th>チーム1</th>
+              <th>チーム2</th>
+              <th>チーム3</th>
+              <th>チーム4</th>
+              <th>お気に入り</th>
+            </tr>
+          </thead>
+          <tbody id="picks-body"></tbody>
+        </table>
+      </div>
+      <div class="actions">
+        <button type="button" class="ghost" onclick="resetAllData()">全データ初期化</button>
+      </div>
+      <div class="status" style="margin-top:14px;">共有用JSON</div>
+      <textarea id="share-json-input" spellcheck="false" placeholder="ここに共有用JSONが表示されます。取込時はここにJSONを貼り付けてください。"></textarea>
+      <div class="actions">
+        <button type="button" onclick="exportShareJson()">JSON表示</button>
+        <button type="button" class="secondary" onclick="importShareJson()">JSON取込</button>
+      </div>
+      <div id="share-json-status" class="status"></div>
+      <ul id="share-json-issues" class="issues"></ul>
+      <div id="pick-status" class="status"></div>
+      <ul id="pick-issues" class="issues"></ul>
+    </section>
+
+    <section id="results" class="card tab-section" data-tab="results">
+      <h2>結果入力</h2>
+      <div class="meta-grid">
+        <div class="meta">
+          優勝 <span id="count-champion" class="chip">0 / 1</span>
+        </div>
+        <div class="meta">
+          準優勝 <span id="count-runner-up" class="chip">0 / 1</span>
+        </div>
+        <div class="meta">
+          3位 <span id="count-third" class="chip">0 / 1</span>
+        </div>
+        <div class="meta">
+          4位 <span id="count-fourth" class="chip">0 / 1</span>
+        </div>
+        <div class="meta">
+          best8 <span id="count-best8" class="chip">0 / 8</span>
+        </div>
+        <div class="meta">
+          best16 <span id="count-best16" class="chip">0 / 16</span>
+        </div>
+        <div class="meta">
+          best32 <span id="count-best32" class="chip">0 / 32</span>
+        </div>
+      </div>
+
+      <div id="results-group-tables" class="results-groups">
+        <section class="result-group-card">
+          <div class="result-group-head">読み込み中...</div>
+        </section>
+      </div>
+
+      <div class="actions">
+        <button type="button" class="ghost" onclick="resetAllData()">全データ初期化</button>
+        <button type="button" class="secondary" onclick="saveStateAndNotify('大会結果を保存しました')">結果を保存</button>
+      </div>
+      <div class="status" style="margin-top:14px;">結果共有用JSON</div>
+      <textarea id="results-json-input" spellcheck="false" placeholder="ここに結果共有用JSONが表示されます。取込時はここにJSONを貼り付けてください。"></textarea>
+      <div class="actions">
+        <button type="button" onclick="exportResultsJson()">JSON表示</button>
+        <button type="button" class="secondary" onclick="importResultsJson()">JSON取込</button>
+      </div>
+      <div id="results-json-status" class="status"></div>
+      <ul id="results-json-issues" class="issues"></ul>
+    </section>
+
+    <section id="team-points" class="card tab-section" data-tab="team-points">
+      <h2>ポイント表</h2>
+      <div class="status">参加者ごとに4チームの明細とpt合計を表示します。確定のチームは薄いグリーンで表示されます。</div>
+      <div id="team-points-groups" class="participant-points-list"></div>
+    </section>
+
+    <section id="ranking" class="card tab-section active" data-tab="ranking">
+      <h2>順位表</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th class="center">メダル</th>
+              <th class="center">順位</th>
+              <th>参加者</th>
+              <th class="num">最終pt</th>
+              <th class="center">未確定チーム数</th>
+            </tr>
+          </thead>
+          <tbody id="ranking-body"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <div id="flash" class="flash"></div>
+
+  <script id="default-teams-json" type="application/json">
+{
+  "teams": [
+    { "id": "MEX", "name": "メキシコ", "pot": "pot1_host", "group": "グループA" },
+    { "id": "CAN", "name": "カナダ", "pot": "pot1_host", "group": "グループB" },
+    { "id": "BRA", "name": "ブラジル", "pot": "pot1", "group": "グループC" },
+    { "id": "USA", "name": "アメリカ", "pot": "pot1_host", "group": "グループD" },
+    { "id": "GER", "name": "ドイツ", "pot": "pot1", "group": "グループE" },
+    { "id": "NED", "name": "オランダ", "pot": "pot1", "group": "グループF" },
+    { "id": "BEL", "name": "ベルギー", "pot": "pot1", "group": "グループG" },
+    { "id": "ESP", "name": "スペイン", "pot": "pot1", "group": "グループH" },
+    { "id": "FRA", "name": "フランス", "pot": "pot1", "group": "グループI" },
+    { "id": "ARG", "name": "アルゼンチン", "pot": "pot1", "group": "グループJ" },
+    { "id": "POR", "name": "ポルトガル", "pot": "pot1", "group": "グループK" },
+    { "id": "ENG", "name": "イングランド", "pot": "pot1", "group": "グループL" },
+
+    { "id": "KOR", "name": "韓国", "pot": "pot2", "group": "グループA" },
+    { "id": "SUI", "name": "スイス", "pot": "pot2", "group": "グループB" },
+    { "id": "MAR", "name": "モロッコ", "pot": "pot2", "group": "グループC" },
+    { "id": "AUS", "name": "オーストラリア", "pot": "pot2", "group": "グループD" },
+    { "id": "ECU", "name": "エクアドル", "pot": "pot2", "group": "グループE" },
+    { "id": "JPN", "name": "日本", "pot": "pot2", "group": "グループF" },
+    { "id": "IRN", "name": "イラン", "pot": "pot2", "group": "グループG" },
+    { "id": "URU", "name": "ウルグアイ", "pot": "pot2", "group": "グループH" },
+    { "id": "SEN", "name": "セネガル", "pot": "pot2", "group": "グループI" },
+    { "id": "AUT", "name": "オーストリア", "pot": "pot2", "group": "グループJ" },
+    { "id": "COL", "name": "コロンビア", "pot": "pot2", "group": "グループK" },
+    { "id": "CRO", "name": "クロアチア", "pot": "pot2", "group": "グループL" },
+
+    { "id": "RSA", "name": "南アフリカ", "pot": "pot3", "group": "グループA" },
+    { "id": "QAT", "name": "カタール", "pot": "pot3", "group": "グループB" },
+    { "id": "SCO", "name": "スコットランド", "pot": "pot3", "group": "グループC" },
+    { "id": "PAR", "name": "パラグアイ", "pot": "pot3", "group": "グループD" },
+    { "id": "CIV", "name": "コートジボワール", "pot": "pot3", "group": "グループE" },
+    { "id": "TUN", "name": "チュニジア", "pot": "pot3", "group": "グループF" },
+    { "id": "EGY", "name": "エジプト", "pot": "pot3", "group": "グループG" },
+    { "id": "KSA", "name": "サウジアラビア", "pot": "pot3", "group": "グループH" },
+    { "id": "NOR", "name": "ノルウェー", "pot": "pot3", "group": "グループI" },
+    { "id": "ALG", "name": "アルジェリア", "pot": "pot3", "group": "グループJ" },
+    { "id": "UZB", "name": "ウズベキスタン", "pot": "pot3", "group": "グループK" },
+    { "id": "PAN", "name": "パナマ", "pot": "pot3", "group": "グループL" },
+
+    { "id": "CZE", "name": "チェコ", "pot": "pot4_euro", "group": "グループA" },
+    { "id": "BIH", "name": "ボスニア・ヘルツェゴビナ", "pot": "pot4_euro", "group": "グループB" },
+    { "id": "HAI", "name": "ハイチ", "pot": "pot4_other", "group": "グループC" },
+    { "id": "TUR", "name": "トルコ", "pot": "pot4_euro", "group": "グループD" },
+    { "id": "CUW", "name": "キュラソー", "pot": "pot4_other", "group": "グループE" },
+    { "id": "SWE", "name": "スウェーデン", "pot": "pot4_euro", "group": "グループF" },
+    { "id": "NZL", "name": "ニュージーランド", "pot": "pot4_other", "group": "グループG" },
+    { "id": "CPV", "name": "カーボベルデ", "pot": "pot4_other", "group": "グループH" },
+    { "id": "IRQ", "name": "イラク", "pot": "pot4_other", "group": "グループI" },
+    { "id": "JOR", "name": "ヨルダン", "pot": "pot4_other", "group": "グループJ" },
+    { "id": "CGO", "name": "コンゴ", "pot": "pot4_other", "group": "グループK" },
+    { "id": "GHA", "name": "ガーナ", "pot": "pot4_other", "group": "グループL" }
+  ]
+}
+  </script>
+
+  <script id="default-results-json" type="application/json">
+{
+  "teamStages": {
+    "JPN": "champion"
+  },
+  "teamConfirmed": {
+  }
+}
+  </script>
+
+  <script id="default-picks-json" type="application/json">
+{
+  "participants": [
+    { "name": "山口", "picks": ["FRA", "JPN", "NOR", "TUR"], "favorite": "JPN" },
+    { "name": "谷川", "picks": ["USA", "SEN", "QAT", "CPV"], "favorite": "USA" },
+    { "name": "橋本", "picks": ["POR", "KOR", "EGY", "BIH"], "favorite": "EGY" },
+    { "name": "坂本", "picks": ["MEX", "AUT", "CIV", "JOR"], "favorite": "MEX" },
+    { "name": "米井", "picks": ["NED", "URU", "PAN", "SWE"], "favorite": "SWE" },
+    { "name": "辻本", "picks": ["ARG", "ECU", "SCO", "HAI"], "favorite": "ARG" },
+    { "name": "菅谷", "picks": ["GER", "SUI", "ALG", "CGO"], "favorite": "ALG" },
+    { "name": "植木", "picks": ["CAN", "MAR", "KSA", "CZE"], "favorite": "MAR" },
+    { "name": "河野", "picks": ["BEL", "CRO", "RSA", "IRQ"], "favorite": "BEL" },
+    { "name": "林", "picks": ["ENG", "IRN", "UZB", "CUW"], "favorite": "UZB" },
+    { "name": "中田", "picks": ["ESP", "COL", "PAR", "GHA"], "favorite": "COL" },
+    { "name": "山田", "picks": ["BRA", "AUS", "TUN", "NZL"], "favorite": "BRA" }
+  ]
+}
+  </script>
+
+  <script>
+    "use strict";
+
+    const STORAGE_KEY = "wc2026_predict_v1";
+    const PARTICIPANT_COUNT = 12;
+    const PICK_COUNT = 4;
+    const PARTICIPANT_NAMES = [
+      "山口",
+      "谷川",
+      "橋本",
+      "坂本",
+      "米井",
+      "辻本",
+      "菅谷",
+      "植木",
+      "河野",
+      "林",
+      "中田",
+      "山田"
+    ];
+
+    const RANK_POINTS = {
+      champion: 12,
+      runner_up: 7,
+      third: 5,
+      fourth: 4,
+      best8: 3,
+      best16: 2,
+      best32: 1,
+      eliminated: 0,
+      none: 0
+    };
+
+    const POT_MULTIPLIERS = {
+      pot1_host: 2.5,
+      pot1: 1.5,
+      pot2: 3,
+      pot3: 7,
+      pot4_euro: 3,
+      pot4_other: 13
+    };
+
+    const POT_LABELS = {
+      pot1_host: "ポット1(開催国)",
+      pot1: "ポット1(開催国以外)",
+      pot2: "ポット2",
+      pot3: "ポット3",
+      pot4_euro: "ポット4(EURO)",
+      pot4_other: "ポット4(EURO以外)"
+    };
+
+    const POT_SORT_ORDER = {
+      pot1_host: 0,
+      pot1: 1,
+      pot2: 2,
+      pot3: 3,
+      pot4_euro: 4,
+      pot4_other: 5
+    };
+
+    const GROUP_LABELS = [
+      "グループA",
+      "グループB",
+      "グループC",
+      "グループD",
+      "グループE",
+      "グループF",
+      "グループG",
+      "グループH",
+      "グループI",
+      "グループJ",
+      "グループK",
+      "グループL"
+    ];
+
+    const STAGE_ORDER = {
+      eliminated: 0,
+      none: 0,
+      best32: 1,
+      best16: 2,
+      best8: 3,
+      fourth: 4,
+      third: 5,
+      runner_up: 6,
+      champion: 7
+    };
+
+    const STAGE_OPTIONS = [
+      { value: "none", label: "未設定" },
+      { value: "eliminated", label: "敗退" },
+      { value: "best32", label: "best32" },
+      { value: "best16", label: "best16" },
+      { value: "best8", label: "best8" },
+      { value: "fourth", label: "4位" },
+      { value: "third", label: "3位" },
+      { value: "runner_up", label: "準優勝" },
+      { value: "champion", label: "優勝" }
+    ];
+
+    const SLOT_ALLOWED_POTS = [
+      ["pot1_host", "pot1"],
+      ["pot2"],
+      ["pot3"],
+      ["pot4_euro", "pot4_other"]
+    ];
+
+    const SLOT_ALLOWED_POT_LABELS = [
+      "ポット1",
+      "ポット2",
+      "ポット3",
+      "ポット4"
+    ];
+
+    let teams = [];
+    let teamMap = new Map();
+    let defaultResultTeamStages = {};
+    let defaultResultTeamConfirmed = {};
+    let defaultPickParticipants = [];
+
+    let state = {
+      participants: [],
+      results: {
+        teamStages: {},
+        teamConfirmed: {}
+      }
+    };
+
+    function makeDefaultParticipants() {
+      const rows = [];
+      for (let i = 1; i <= PARTICIPANT_COUNT; i += 1) {
+        const source = defaultPickParticipants[i - 1] || { picks: ["", "", "", ""], favorite: "" };
+        const picks = Array.isArray(source.picks) ? source.picks.slice(0, PICK_COUNT) : [];
+        while (picks.length < PICK_COUNT) picks.push("");
+
+        rows.push({
+          id: i,
+          name: PARTICIPANT_NAMES[i - 1],
+          picks: picks.map((x) => (typeof x === "string" ? x : "")),
+          favorite: typeof source.favorite === "string" ? source.favorite : ""
+        });
+      }
+      return rows;
+    }
+
+    function makeDefaultResults() {
+      return {
+        teamStages: { ...defaultResultTeamStages },
+        teamConfirmed: { ...defaultResultTeamConfirmed }
+      };
+    }
+
+    function uniq(arr) {
+      return Array.from(new Set(arr));
+    }
+
+    function hasAnySelectionData(participants) {
+      if (!Array.isArray(participants)) return false;
+
+      return participants.some((participant) => {
+        if (!participant || typeof participant !== "object") return false;
+
+        const picks = Array.isArray(participant.picks) ? participant.picks : [];
+        const hasPick = picks.some((id) => typeof id === "string" && id.trim() !== "");
+        const hasFavorite = typeof participant.favorite === "string" && participant.favorite.trim() !== "";
+        return hasPick || hasFavorite;
+      });
+    }
+
+    function isSubset(subset, superset) {
+      const set = new Set(superset);
+      return subset.every((x) => set.has(x));
+    }
+
+    function getSlotAllowedPotLabel(slotIndex) {
+      return SLOT_ALLOWED_POT_LABELS[slotIndex] || "指定ポット";
+    }
+
+    function isPotAllowedForSlot(pot, slotIndex) {
+      const allowed = SLOT_ALLOWED_POTS[slotIndex] || [];
+      return allowed.includes(pot);
+    }
+
+    function isTeamAllowedForSlot(teamId, slotIndex) {
+      const team = teamMap.get(teamId);
+      if (!team) return false;
+      return isPotAllowedForSlot(team.pot, slotIndex);
+    }
+
+    function legacyResultsToTeamStages(results) {
+      const stageMap = {};
+      const assign = (teamId, stage) => {
+        if (!teamMap.has(teamId)) return;
+        if (!Object.prototype.hasOwnProperty.call(STAGE_ORDER, stage)) return;
+        const currentStage = stageMap[teamId] || "none";
+        if (STAGE_ORDER[stage] > STAGE_ORDER[currentStage]) {
+          stageMap[teamId] = stage;
+        }
+      };
+
+      const safeResults = results && typeof results === "object" ? results : {};
+      const toArray = (value) => (Array.isArray(value) ? value : []);
+
+      toArray(safeResults.best32).forEach((id) => assign(id, "best32"));
+      toArray(safeResults.best16).forEach((id) => assign(id, "best16"));
+      toArray(safeResults.best8).forEach((id) => assign(id, "best8"));
+
+      if (typeof safeResults.fourth === "string") assign(safeResults.fourth, "fourth");
+      if (typeof safeResults.third === "string") assign(safeResults.third, "third");
+      if (typeof safeResults.runnerUp === "string") assign(safeResults.runnerUp, "runner_up");
+      if (typeof safeResults.champion === "string") assign(safeResults.champion, "champion");
+
+      return stageMap;
+    }
+
+    function escapeHtml(value) {
+      return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
+    function formatNum(num) {
+      if (Number.isInteger(num)) {
+        return String(num);
+      }
+      return num.toFixed(1).replace(/\.0$/, "");
+    }
+
+    function formatRankLabel(rank) {
+      if (rank === 1) return "🥇";
+      if (rank === 2) return "🥈";
+      if (rank === 3) return "🥉";
+      return "";
+    }
+
+    function formatRankNumber(rank) {
+      return String(rank);
+    }
+
+    function setShareJsonStatus(message, kind) {
+      const el = document.getElementById("share-json-status");
+      if (!el) return;
+      el.textContent = message;
+      el.className = "status" + (kind ? " " + kind : "");
+    }
+
+    function renderShareJsonIssues(issues) {
+      const list = document.getElementById("share-json-issues");
+      if (!list) return;
+      list.innerHTML = issues.map((x) => "<li>" + escapeHtml(x) + "</li>").join("");
+    }
+
+    function setResultsJsonStatus(message, kind) {
+      const el = document.getElementById("results-json-status");
+      if (!el) return;
+      el.textContent = message;
+      el.className = "status" + (kind ? " " + kind : "");
+    }
+
+    function renderResultsJsonIssues(issues) {
+      const list = document.getElementById("results-json-issues");
+      if (!list) return;
+      list.innerHTML = issues.map((x) => "<li>" + escapeHtml(x) + "</li>").join("");
+    }
+
+    function collectPickDuplicateIssues(participants) {
+      const issues = [];
+      const teamOwners = new Map();
+
+      participants.forEach((p, index) => {
+        const name = p && typeof p.name === "string" && p.name ? p.name : "参加者" + (index + 1);
+        const picks = Array.isArray(p && p.picks)
+          ? p.picks.filter((id) => typeof id === "string" && id)
+          : [];
+
+        const uniquePicks = uniq(picks);
+        if (uniquePicks.length !== picks.length) {
+          issues.push(name + ": 同じチームを重複選択しています。");
+        }
+
+        uniquePicks.forEach((teamId) => {
+          if (!teamOwners.has(teamId)) {
+            teamOwners.set(teamId, []);
+          }
+          teamOwners.get(teamId).push(name);
+        });
+      });
+
+      teamOwners.forEach((owners, teamId) => {
+        if (owners.length <= 1) return;
+        const team = teamMap.get(teamId);
+        const teamLabel = team ? team.name + " (" + teamId + ")" : teamId;
+        issues.push(teamLabel + " が複数参加者で重複しています: " + owners.join(" / "));
+      });
+
+      return issues;
+    }
+
+    function createSharePayload() {
+      return {
+        participants: state.participants.map((p) => ({
+          name: p.name,
+          picks: p.picks.slice(0, PICK_COUNT),
+          favorite: p.favorite
+        }))
+      };
+    }
+
+    function exportShareJson() {
+      const input = document.getElementById("share-json-input");
+      if (!input) return;
+      input.value = JSON.stringify(createSharePayload(), null, 2);
+      renderShareJsonIssues([]);
+      setShareJsonStatus("default-picks-json に貼り付け可能なJSONを表示しました。", "good");
+    }
+
+    function importShareJson() {
+      const input = document.getElementById("share-json-input");
+      if (!input) return;
+
+      let parsed;
+      try {
+        parsed = JSON.parse(input.value);
+      } catch (error) {
+        renderShareJsonIssues(["JSON構文エラーです。"]);
+        setShareJsonStatus("JSON解析に失敗しました: " + error.message, "error");
+        return;
+      }
+
+      const source = parsed && typeof parsed === "object" && parsed.participants ? parsed :
+        parsed && typeof parsed === "object" && parsed.data && parsed.data.participants ? parsed.data : null;
+
+      const issues = [];
+      if (!source) {
+        issues.push("participants を含むJSONではありません。");
+      }
+
+      if (source && (!Array.isArray(source.participants) || source.participants.length !== PARTICIPANT_COUNT)) {
+        issues.push("participants は " + PARTICIPANT_COUNT + " 件必要です。");
+      }
+
+      if (source && Array.isArray(source.participants)) {
+        source.participants.forEach((p, idx) => {
+          if (!p || typeof p !== "object") {
+            issues.push((idx + 1) + "件目: 参加者要素が不正です。");
+            return;
+          }
+
+          if (!Array.isArray(p.picks)) {
+            issues.push((idx + 1) + "件目: picks 配列が必要です。");
+          }
+
+          if (Array.isArray(p.picks) && p.picks.length !== PICK_COUNT) {
+            issues.push((idx + 1) + "件目: picks は" + PICK_COUNT + "件必要です。");
+          }
+
+          if (p.favorite != null && typeof p.favorite !== "string") {
+            issues.push((idx + 1) + "件目: favorite は文字列で指定してください。");
+          }
+        });
+
+        const normalizedForCheck = source.participants.map((p, index) => {
+          const picks = Array.isArray(p && p.picks) ? p.picks.slice(0, PICK_COUNT) : [];
+          while (picks.length < PICK_COUNT) picks.push("");
+          return {
+            name: PARTICIPANT_NAMES[index],
+            picks: picks.map((x) => (typeof x === "string" ? x : ""))
+          };
+        });
+
+        issues.push(...collectPickDuplicateIssues(normalizedForCheck));
+      }
+
+      if (issues.length > 0) {
+        renderShareJsonIssues(issues);
+        setShareJsonStatus("JSON取込に失敗しました。", "error");
+        return;
+      }
+
+      state.participants = source.participants.map((p, index) => {
+        const picks = Array.isArray(p.picks) ? p.picks.slice(0, PICK_COUNT) : [];
+        while (picks.length < PICK_COUNT) picks.push("");
+        return {
+          id: index + 1,
+          name: PARTICIPANT_NAMES[index],
+          picks: picks.map((x) => (typeof x === "string" ? x : "")),
+          favorite: typeof p.favorite === "string" ? p.favorite : ""
+        };
+      });
+
+      normalizeState();
+      saveState();
+      renderAll();
+      renderShareJsonIssues([]);
+      setShareJsonStatus("JSONを取り込み、localStorageに保存しました。", "good");
+      flash("共有JSONを取り込み、保存しました");
+    }
+
+    function createResultsPayload() {
+      return {
+        teamStages: { ...(state.results && state.results.teamStages ? state.results.teamStages : {}) },
+        teamConfirmed: { ...(state.results && state.results.teamConfirmed ? state.results.teamConfirmed : {}) }
+      };
+    }
+
+    function exportResultsJson() {
+      const input = document.getElementById("results-json-input");
+      if (!input) return;
+      input.value = JSON.stringify(createResultsPayload(), null, 2);
+      renderResultsJsonIssues([]);
+      setResultsJsonStatus("default-results-json に貼り付け可能なJSONを表示しました。", "good");
+    }
+
+    function importResultsJson() {
+      const input = document.getElementById("results-json-input");
+      if (!input) return;
+
+      let parsed;
+      try {
+        parsed = JSON.parse(input.value);
+      } catch (error) {
+        renderResultsJsonIssues(["JSON構文エラーです。"]);
+        setResultsJsonStatus("JSON解析に失敗しました: " + error.message, "error");
+        return;
+      }
+
+      const source =
+        parsed && typeof parsed === "object" && parsed.teamStages ? parsed :
+        parsed && typeof parsed === "object" && parsed.data && parsed.data.teamStages ? parsed.data : null;
+
+      const issues = [];
+      if (!source) {
+        issues.push("teamStages を含むJSONではありません。");
+      }
+
+      if (source) {
+        issues.push(...validateDefaultResultsPayload(source));
+      }
+
+      if (issues.length > 0) {
+        renderResultsJsonIssues(issues);
+        setResultsJsonStatus("JSON取込に失敗しました。", "error");
+        return;
+      }
+
+      state.results = sanitizeResultsPayload(source);
+      normalizeState();
+      saveState();
+      renderAll();
+      renderResultsJsonIssues([]);
+      setResultsJsonStatus("JSONを取り込み、localStorageに保存しました。", "good");
+      flash("結果共有JSONを取り込み、保存しました");
+    }
+
+    function flash(message) {
+      const el = document.getElementById("flash");
+      el.textContent = message;
+      el.classList.add("show");
+      window.setTimeout(() => el.classList.remove("show"), 1800);
+    }
+
+    function setAppStatus(message, kind) {
+      const el = document.getElementById("app-status");
+      el.textContent = message;
+      el.className = "status" + (kind ? " " + kind : "");
+    }
+
+    function showGlobalError(message) {
+      const el = document.getElementById("global-error");
+      if (!el) return;
+      el.textContent = message;
+      el.classList.add("show");
+    }
+
+    function clearGlobalError() {
+      const el = document.getElementById("global-error");
+      if (!el) return;
+      el.textContent = "";
+      el.classList.remove("show");
+    }
+
+    function showTab(tabName) {
+      const buttons = document.querySelectorAll("[data-tab-btn]");
+      const sections = document.querySelectorAll("[data-tab]");
+
+      buttons.forEach((btn) => {
+        btn.classList.toggle("active", btn.getAttribute("data-tab-btn") === tabName);
+      });
+
+      sections.forEach((section) => {
+        section.classList.toggle("active", section.getAttribute("data-tab") === tabName);
+      });
+    }
+
+    function getEmbeddedDefaultTeamsPayload() {
+      const source = document.getElementById("default-teams-json");
+      if (!source) {
+        throw new Error("埋め込みチームJSONが見つかりません");
+      }
+      return JSON.parse(source.textContent);
+    }
+
+    function getEmbeddedDefaultResultsPayload() {
+      const source = document.getElementById("default-results-json");
+      if (!source) {
+        throw new Error("埋め込み結果初期値JSONが見つかりません");
+      }
+      return JSON.parse(source.textContent);
+    }
+
+    function getEmbeddedDefaultPicksPayload() {
+      const source = document.getElementById("default-picks-json");
+      if (!source) {
+        throw new Error("埋め込み選択チーム初期値JSONが見つかりません");
+      }
+      return JSON.parse(source.textContent);
+    }
+
+    function validateTeamsPayload(payload) {
+      const issues = [];
+      if (!payload || typeof payload !== "object") {
+        issues.push("JSONルートはオブジェクトである必要があります。");
+        return issues;
+      }
+
+      if (!Array.isArray(payload.teams)) {
+        issues.push("teams 配列が必要です。");
+        return issues;
+      }
+
+      if (payload.teams.length !== 48) {
+        issues.push("teams は48件である必要があります（現在 " + payload.teams.length + "件）。");
+      }
+
+      const idSet = new Set();
+      payload.teams.forEach((team, idx) => {
+        if (!team || typeof team !== "object") {
+          issues.push((idx + 1) + "件目: チーム要素はオブジェクトである必要があります。");
+          return;
+        }
+
+        const id = typeof team.id === "string" ? team.id.trim() : "";
+        const name = typeof team.name === "string" ? team.name.trim() : "";
+        const pot = typeof team.pot === "string" ? team.pot.trim() : "";
+        const group = typeof team.group === "string" ? team.group.trim() : "";
+
+        if (!id) {
+          issues.push((idx + 1) + "件目: id が空です。");
+        } else if (idSet.has(id)) {
+          issues.push((idx + 1) + "件目: id が重複しています（" + id + "）。");
+        } else {
+          idSet.add(id);
+        }
+
+        if (!name) {
+          issues.push((idx + 1) + "件目: name が空です。");
+        }
+
+        if (!Object.prototype.hasOwnProperty.call(POT_MULTIPLIERS, pot)) {
+          issues.push((idx + 1) + "件目: pot が不正です（" + pot + "）。");
+        }
+
+        if (!group) {
+          issues.push((idx + 1) + "件目: group が空です。");
+        } else if (!GROUP_LABELS.includes(group)) {
+          issues.push((idx + 1) + "件目: group が不正です（" + group + "）。");
+        }
+      });
+
+      return issues;
+    }
+
+    function validateDefaultResultsPayload(payload) {
+      const issues = [];
+      if (!payload || typeof payload !== "object") {
+        issues.push("JSONルートはオブジェクトである必要があります。");
+        return issues;
+      }
+
+      if (
+        !Object.prototype.hasOwnProperty.call(payload, "teamStages") ||
+        !payload.teamStages ||
+        typeof payload.teamStages !== "object" ||
+        Array.isArray(payload.teamStages)
+      ) {
+        issues.push("teamStages オブジェクトが必要です。");
+        return issues;
+      }
+
+      Object.keys(payload.teamStages).forEach((teamId) => {
+        if (!teamMap.has(teamId)) {
+          issues.push("teamStages: 不明な teamId です（" + teamId + "）。");
+          return;
+        }
+
+        const stageValue = payload.teamStages[teamId];
+        const stage = typeof stageValue === "string" ? stageValue.trim() : "";
+
+        if (!Object.prototype.hasOwnProperty.call(STAGE_ORDER, stage)) {
+          issues.push("teamStages." + teamId + ": stage が不正です（" + stageValue + "）。");
+        }
+      });
+
+      if (
+        Object.prototype.hasOwnProperty.call(payload, "teamConfirmed") &&
+        (
+          !payload.teamConfirmed ||
+          typeof payload.teamConfirmed !== "object" ||
+          Array.isArray(payload.teamConfirmed)
+        )
+      ) {
+        issues.push("teamConfirmed はオブジェクトである必要があります。");
+      }
+
+      if (payload.teamConfirmed && typeof payload.teamConfirmed === "object" && !Array.isArray(payload.teamConfirmed)) {
+        Object.keys(payload.teamConfirmed).forEach((teamId) => {
+          if (!teamMap.has(teamId)) {
+            issues.push("teamConfirmed: 不明な teamId です（" + teamId + "）。");
+            return;
+          }
+
+          if (typeof payload.teamConfirmed[teamId] !== "boolean") {
+            issues.push("teamConfirmed." + teamId + ": true/false で指定してください。");
+          }
+        });
+      }
+
+      return issues;
+    }
+
+    function validateDefaultPicksPayload(payload) {
+      const issues = [];
+      if (!payload || typeof payload !== "object") {
+        issues.push("JSONルートはオブジェクトである必要があります。");
+        return issues;
+      }
+
+      if (!Array.isArray(payload.participants)) {
+        issues.push("participants 配列が必要です。");
+        return issues;
+      }
+
+      if (payload.participants.length !== PARTICIPANT_COUNT) {
+        issues.push("participants は " + PARTICIPANT_COUNT + " 件必要です（現在 " + payload.participants.length + "件）。");
+      }
+
+      const normalizedForCheck = payload.participants.map((participant, index) => {
+        if (!participant || typeof participant !== "object") {
+          issues.push((index + 1) + "件目: 参加者要素が不正です。");
+          return {
+            name: PARTICIPANT_NAMES[index] || ("参加者" + (index + 1)),
+            picks: ["", "", "", ""],
+            favorite: ""
+          };
+        }
+
+        if (!Array.isArray(participant.picks)) {
+          issues.push((index + 1) + "件目: picks 配列が必要です。");
+        }
+
+        const picks = Array.isArray(participant.picks) ? participant.picks.slice(0, PICK_COUNT) : [];
+        if (Array.isArray(participant.picks) && participant.picks.length !== PICK_COUNT) {
+          issues.push((index + 1) + "件目: picks は" + PICK_COUNT + "件必要です。");
+        }
+
+        while (picks.length < PICK_COUNT) picks.push("");
+
+        const safePicks = picks.map((value, pickIndex) => {
+          if (typeof value !== "string") {
+            issues.push((index + 1) + "件目: picks[" + (pickIndex + 1) + "] は文字列で指定してください。");
+            return "";
+          }
+
+          const id = value.trim();
+          if (!id) return "";
+
+          if (!teamMap.has(id)) {
+            issues.push((index + 1) + "件目: 不明な teamId です（" + id + "）。");
+            return "";
+          }
+
+          const team = teamMap.get(id);
+          if (!isPotAllowedForSlot(team.pot, pickIndex)) {
+            issues.push(
+              (index + 1)
+              + "件目: picks["
+              + (pickIndex + 1)
+              + "] は"
+              + getSlotAllowedPotLabel(pickIndex)
+              + "のチームのみ指定できます。"
+            );
+            return "";
+          }
+
+          return id;
+        });
+
+        if (participant.favorite != null && typeof participant.favorite !== "string") {
+          issues.push((index + 1) + "件目: favorite は文字列で指定してください。");
+        }
+
+        const favorite = typeof participant.favorite === "string" ? participant.favorite.trim() : "";
+        if (favorite) {
+          if (!teamMap.has(favorite)) {
+            issues.push((index + 1) + "件目: favorite の teamId が不正です（" + favorite + "）。");
+          } else if (!safePicks.includes(favorite)) {
+            issues.push((index + 1) + "件目: favorite は picks の中から指定してください。");
+          }
+        }
+
+        return {
+          name: PARTICIPANT_NAMES[index] || ("参加者" + (index + 1)),
+          picks: safePicks,
+          favorite
+        };
+      });
+
+      issues.push(...collectPickDuplicateIssues(normalizedForCheck));
+      return issues;
+    }
+
+    function applyTeamsPayload(payload) {
+      const issues = validateTeamsPayload(payload);
+      if (issues.length > 0) {
+        return { ok: false, issues };
+      }
+
+      const normalizedPayload = {
+        teams: payload.teams.map((team) => ({
+          id: team.id.trim(),
+          name: team.name.trim(),
+          pot: team.pot.trim(),
+          group: team.group.trim()
+        }))
+      };
+
+      teams = normalizedPayload.teams;
+      teamMap = new Map(teams.map((t) => [t.id, t]));
+
+      return { ok: true, issues: [] };
+    }
+
+    function applyDefaultResultsPayload(payload) {
+      const issues = validateDefaultResultsPayload(payload);
+      if (issues.length > 0) {
+        return { ok: false, issues };
+      }
+
+      const normalizedResults = sanitizeResultsPayload(payload);
+      defaultResultTeamStages = normalizedResults.teamStages;
+      defaultResultTeamConfirmed = normalizedResults.teamConfirmed;
+      return { ok: true, issues: [] };
+    }
+
+    function sanitizeResultsPayload(payload) {
+      const safePayload = payload && typeof payload === "object" ? payload : { teamStages: {}, teamConfirmed: {} };
+
+      const safeStages = {};
+      const rawStages =
+        safePayload.teamStages && typeof safePayload.teamStages === "object" && !Array.isArray(safePayload.teamStages)
+          ? safePayload.teamStages
+          : {};
+
+      Object.keys(rawStages).forEach((teamId) => {
+        const stageValue = rawStages[teamId];
+        const stage = typeof stageValue === "string" ? stageValue.trim() : "";
+        if (stage === "none") return;
+        if (!Object.prototype.hasOwnProperty.call(STAGE_ORDER, stage)) return;
+        if (!teamMap.has(teamId)) return;
+        safeStages[teamId] = stage;
+      });
+
+      const safeConfirmed = {};
+      const rawConfirmed =
+        safePayload.teamConfirmed && typeof safePayload.teamConfirmed === "object" && !Array.isArray(safePayload.teamConfirmed)
+          ? safePayload.teamConfirmed
+          : {};
+
+      Object.keys(rawConfirmed).forEach((teamId) => {
+        if (!safeStages[teamId]) return;
+        if (rawConfirmed[teamId] === true) {
+          safeConfirmed[teamId] = true;
+        }
+      });
+
+      return { teamStages: safeStages, teamConfirmed: safeConfirmed };
+    }
+
+    function applyDefaultPicksPayload(payload) {
+      const issues = validateDefaultPicksPayload(payload);
+      if (issues.length > 0) {
+        return { ok: false, issues };
+      }
+
+      defaultPickParticipants = payload.participants.map((participant) => {
+        const picks = Array.isArray(participant.picks) ? participant.picks.slice(0, PICK_COUNT) : [];
+        while (picks.length < PICK_COUNT) picks.push("");
+
+        const safePicks = picks.map((value) => {
+          if (typeof value !== "string") return "";
+          const id = value.trim();
+          return teamMap.has(id) ? id : "";
+        });
+
+        const favoriteValue = typeof participant.favorite === "string" ? participant.favorite.trim() : "";
+        const safeFavorite = teamMap.has(favoriteValue) && safePicks.includes(favoriteValue) ? favoriteValue : "";
+
+        return {
+          picks: safePicks,
+          favorite: safeFavorite
+        };
+      });
+
+      return { ok: true, issues: [] };
+    }
+
+    function loadTeamsPayload() {
+      const defaultPayload = getEmbeddedDefaultTeamsPayload();
+      const defaultIssues = validateTeamsPayload(defaultPayload);
+      if (defaultIssues.length > 0) {
+        throw new Error("埋め込みチームJSONが不正です: " + defaultIssues.join(" / "));
+      }
+      return defaultPayload;
+    }
+
+    function loadDefaultResultsPayload() {
+      const defaultPayload = getEmbeddedDefaultResultsPayload();
+      const defaultIssues = validateDefaultResultsPayload(defaultPayload);
+      if (defaultIssues.length > 0) {
+        throw new Error("埋め込み結果初期値JSONが不正です: " + defaultIssues.join(" / "));
+      }
+      return defaultPayload;
+    }
+
+    function loadDefaultPicksPayload() {
+      const defaultPayload = getEmbeddedDefaultPicksPayload();
+      const defaultIssues = validateDefaultPicksPayload(defaultPayload);
+      if (defaultIssues.length > 0) {
+        throw new Error("埋め込み選択チーム初期値JSONが不正です: " + defaultIssues.join(" / "));
+      }
+      return defaultPayload;
+    }
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) {
+          state.participants = makeDefaultParticipants();
+          state.results = makeDefaultResults();
+          return;
+        }
+        const parsed = JSON.parse(raw);
+        state.participants = parsed.participants;
+        state.results = parsed.results;
+
+        const storedHasSelections = hasAnySelectionData(state.participants);
+        const defaultHasSelections = hasAnySelectionData(defaultPickParticipants);
+        if (!storedHasSelections && defaultHasSelections) {
+          state.participants = makeDefaultParticipants();
+        }
+      } catch (_error) {
+        state.participants = makeDefaultParticipants();
+        state.results = makeDefaultResults();
+      }
+    }
+
+    function normalizeState() {
+      if (!Array.isArray(state.participants) || state.participants.length !== PARTICIPANT_COUNT) {
+        state.participants = makeDefaultParticipants();
+      }
+
+      state.participants = state.participants.map((p, index) => {
+        const picks = Array.isArray(p.picks) ? p.picks.slice(0, PICK_COUNT) : [];
+        while (picks.length < PICK_COUNT) picks.push("");
+
+        const safePicks = picks.map((id, slotIndex) => (
+          teamMap.has(id) && isTeamAllowedForSlot(id, slotIndex) ? id : ""
+        ));
+        const safeFav = teamMap.has(p.favorite) && safePicks.includes(p.favorite) ? p.favorite : "";
+
+        return {
+          id: index + 1,
+          name: PARTICIPANT_NAMES[index],
+          picks: safePicks,
+          favorite: safeFav
+        };
+      });
+
+      if (!state.results || typeof state.results !== "object") {
+        state.results = makeDefaultResults();
+      }
+
+      const rawStages =
+        state.results.teamStages && typeof state.results.teamStages === "object"
+          ? state.results.teamStages
+          : legacyResultsToTeamStages(state.results);
+
+      const safeStages = {};
+      Object.keys(rawStages).forEach((teamId) => {
+        const stage = rawStages[teamId];
+        if (!teamMap.has(teamId)) return;
+        if (!Object.prototype.hasOwnProperty.call(STAGE_ORDER, stage)) return;
+        if (stage === "none") return;
+        safeStages[teamId] = stage;
+      });
+
+      const rawConfirmed =
+        state.results.teamConfirmed && typeof state.results.teamConfirmed === "object" && !Array.isArray(state.results.teamConfirmed)
+          ? state.results.teamConfirmed
+          : {};
+
+      const safeConfirmed = {};
+      Object.keys(rawConfirmed).forEach((teamId) => {
+        if (!safeStages[teamId]) return;
+        if (rawConfirmed[teamId] === true) {
+          safeConfirmed[teamId] = true;
+        }
+      });
+
+      state.results = { teamStages: safeStages, teamConfirmed: safeConfirmed };
+    }
+
+    function saveState() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    function saveStateAndNotify(message) {
+      saveState();
+      flash(message);
+    }
+
+    function resetAllData() {
+      if (!window.confirm("参加者選択・結果入力をすべて初期化します。よろしいですか？")) {
+        return;
+      }
+      state.participants = makeDefaultParticipants();
+      state.results = makeDefaultResults();
+      saveState();
+      renderAll();
+      flash("全データを初期化しました");
+    }
+
+    function buildTeamOptions(selectedId, includeBlank, slotIndex) {
+      const parts = [];
+      if (includeBlank) {
+        parts.push("<option value=''>未選択</option>");
+      }
+      for (const team of teams) {
+        if (!isPotAllowedForSlot(team.pot, slotIndex)) {
+          continue;
+        }
+        const selected = team.id === selectedId ? " selected" : "";
+        parts.push("<option value='" + team.id + "'" + selected + ">" + escapeHtml(team.name) + " (" + team.id + ")</option>");
+      }
+      return parts.join("");
+    }
+
+    function buildFavoriteOptions(participant) {
+      const selectedTeams = uniq(participant.picks.filter(Boolean));
+      const parts = ["<option value=''>未選択</option>"];
+      for (const teamId of selectedTeams) {
+        const team = teamMap.get(teamId);
+        if (!team) continue;
+        const selected = participant.favorite === teamId ? " selected" : "";
+        parts.push("<option value='" + teamId + "'" + selected + ">" + escapeHtml(team.name) + " (" + teamId + ")</option>");
+      }
+      return parts.join("");
+    }
+
+    function stageLabel(stage) {
+      switch (stage) {
+        case "eliminated":
+          return "敗退";
+        case "champion":
+          return "優勝";
+        case "runner_up":
+          return "準優勝";
+        case "third":
+          return "3位";
+        case "fourth":
+          return "4位";
+        case "best8":
+          return "best8";
+        case "best16":
+          return "best16";
+        case "best32":
+          return "best32";
+        default:
+          return "未設定";
+      }
+    }
+
+    function getTeamStage(teamId) {
+      if (!teamId) return "none";
+      const teamStages = state.results && state.results.teamStages ? state.results.teamStages : {};
+      return teamStages[teamId] || "none";
+    }
+
+    function isTeamResultConfirmed(teamId) {
+      if (!teamId) return false;
+      const teamConfirmed = state.results && state.results.teamConfirmed ? state.results.teamConfirmed : {};
+      return teamConfirmed[teamId] === true;
+    }
+
+    function calcTeamPoint(participant, slotIndex) {
+      const teamId = participant.picks[slotIndex];
+      const team = teamMap.get(teamId);
+      if (!team) {
+        return {
+          participantName: participant.name,
+          slot: slotIndex + 1,
+          teamName: "未選択",
+          potLabel: "-",
+          stage: "none",
+          hasTeam: false,
+          isConfirmed: false,
+          rankPt: 0,
+          weight: 0,
+          favoriteMultiplier: 1,
+          teamPoint: 0
+        };
+      }
+
+      const stage = getTeamStage(teamId);
+      const isConfirmed = isTeamResultConfirmed(teamId);
+      const rankPt = RANK_POINTS[stage] || 0;
+      const weight = POT_MULTIPLIERS[team.pot] || 0;
+      const favoriteMultiplier = participant.favorite === teamId ? 2 : 1;
+      const teamPoint = rankPt * weight * favoriteMultiplier;
+
+      return {
+        participantName: participant.name,
+        slot: slotIndex + 1,
+        teamName: team.name + " (" + team.id + ")",
+        potLabel: POT_LABELS[team.pot] || team.pot,
+        stage,
+        hasTeam: true,
+        isConfirmed,
+        rankPt,
+        weight,
+        favoriteMultiplier,
+        teamPoint
+      };
+    }
+
+    function calcParticipantSummary(participant) {
+      const rows = [];
+      for (let i = 0; i < PICK_COUNT; i += 1) {
+        rows.push(calcTeamPoint(participant, i));
+      }
+
+      const rankTotal = rows.reduce((sum, row) => sum + row.rankPt, 0);
+      const weightedTotal = rows.reduce((sum, row) => sum + row.rankPt * row.weight, 0);
+      const finalTotal = rows.reduce((sum, row) => sum + row.teamPoint, 0);
+      const unconfirmedCount = rows.filter((row) => row.hasTeam && !row.isConfirmed).length;
+
+      return {
+        participant,
+        rows,
+        rankTotal,
+        weightedTotal,
+        finalTotal,
+        unconfirmedCount
+      };
+    }
+
+    function getResultStageCounts() {
+      const counts = {
+        champion: 0,
+        runner_up: 0,
+        third: 0,
+        fourth: 0,
+        best8: 0,
+        best16: 0,
+        best32: 0
+      };
+
+      for (const team of teams) {
+        const stage = getTeamStage(team.id);
+        const order = STAGE_ORDER[stage] || 0;
+
+        if (stage === "champion") counts.champion += 1;
+        if (stage === "runner_up") counts.runner_up += 1;
+        if (stage === "third") counts.third += 1;
+        if (stage === "fourth") counts.fourth += 1;
+
+        if (order >= STAGE_ORDER.best32) counts.best32 += 1;
+        if (order >= STAGE_ORDER.best16) counts.best16 += 1;
+        if (order >= STAGE_ORDER.best8) counts.best8 += 1;
+      }
+
+      return counts;
+    }
+
+    function formatCounterLabel(current, limit) {
+      if (current > limit) {
+        return "<span class='chip-over'>" + current + "</span> / " + limit;
+      }
+      return current + " / " + limit;
+    }
+
+    function updateResultCounters() {
+      const counts = getResultStageCounts();
+      document.getElementById("count-champion").innerHTML = formatCounterLabel(counts.champion, 1);
+      document.getElementById("count-runner-up").innerHTML = formatCounterLabel(counts.runner_up, 1);
+      document.getElementById("count-third").innerHTML = formatCounterLabel(counts.third, 1);
+      document.getElementById("count-fourth").innerHTML = formatCounterLabel(counts.fourth, 1);
+      document.getElementById("count-best8").innerHTML = formatCounterLabel(counts.best8, 8);
+      document.getElementById("count-best16").innerHTML = formatCounterLabel(counts.best16, 16);
+      document.getElementById("count-best32").innerHTML = formatCounterLabel(counts.best32, 32);
+    }
+
+    function renderPickTable() {
+      const body = document.getElementById("picks-body");
+      const pickStatus = document.getElementById("pick-status");
+      const pickIssues = document.getElementById("pick-issues");
+
+      const summaryRows = state.participants.map((p) => calcParticipantSummary(p));
+      const completeCount = state.participants.filter((p) => {
+        const selected = p.picks.filter(Boolean);
+        return selected.length === 4 && uniq(selected).length === 4 && p.favorite && selected.includes(p.favorite);
+      }).length;
+
+      const duplicateIssues = collectPickDuplicateIssues(state.participants);
+
+      if (duplicateIssues.length > 0) {
+        pickStatus.textContent = "入力エラー: " + duplicateIssues.length + "件（チーム重複があります）";
+        pickStatus.className = "status error";
+      } else {
+        pickStatus.textContent = "入力完了: " + completeCount + " / " + PARTICIPANT_COUNT;
+        pickStatus.className = "status " + (completeCount === PARTICIPANT_COUNT ? "good" : "warn");
+      }
+
+      if (pickIssues) {
+        pickIssues.innerHTML = duplicateIssues.map((x) => "<li>" + escapeHtml(x) + "</li>").join("");
+      }
+
+      body.innerHTML = summaryRows
+        .map((summary, idx) => {
+          const p = summary.participant;
+          const selected = p.picks.filter(Boolean);
+          const isComplete = selected.length === 4 && uniq(selected).length === 4 && p.favorite && selected.includes(p.favorite);
+
+          return "<tr class='" + (isComplete ? "" : "incomplete") + "'>"
+            + "<td class='center'>" + (idx + 1) + "</td>"
+            + "<td>" + escapeHtml(p.name) + "</td>"
+            + "<td><select onchange='updatePick(" + idx + ", 0, this.value)'>" + buildTeamOptions(p.picks[0], true, 0) + "</select></td>"
+            + "<td><select onchange='updatePick(" + idx + ", 1, this.value)'>" + buildTeamOptions(p.picks[1], true, 1) + "</select></td>"
+            + "<td><select onchange='updatePick(" + idx + ", 2, this.value)'>" + buildTeamOptions(p.picks[2], true, 2) + "</select></td>"
+            + "<td><select onchange='updatePick(" + idx + ", 3, this.value)'>" + buildTeamOptions(p.picks[3], true, 3) + "</select></td>"
+            + "<td><select onchange='updateFavorite(" + idx + ", this.value)'>" + buildFavoriteOptions(p) + "</select></td>"
+            + "</tr>";
+        })
+        .join("");
+    }
+
+    function buildResultStageOptions(selectedStage) {
+      return STAGE_OPTIONS
+        .map((opt) => {
+          const selected = opt.value === selectedStage ? " selected" : "";
+          return "<option value='" + opt.value + "'" + selected + ">" + opt.label + "</option>";
+        })
+        .join("");
+    }
+
+    function getGroupSortOrder(group) {
+      const index = GROUP_LABELS.indexOf(group);
+      return index === -1 ? 999 : index;
+    }
+
+    function getPotSortOrder(pot) {
+      return Object.prototype.hasOwnProperty.call(POT_SORT_ORDER, pot) ? POT_SORT_ORDER[pot] : 999;
+    }
+
+    function getGroupRowClass(group) {
+      const order = getGroupSortOrder(group);
+      if (order === 999) return "";
+      return "group-bg-" + String(order + 1);
+    }
+
+    function renderResultsForm() {
+      const root = document.getElementById("results-group-tables");
+      if (!root) return;
+
+      const sortedTeams = teams
+        .slice()
+        .sort((a, b) => {
+          const groupOrderDiff = getGroupSortOrder(a.group) - getGroupSortOrder(b.group);
+          if (groupOrderDiff !== 0) return groupOrderDiff;
+
+          const potOrderDiff = getPotSortOrder(a.pot) - getPotSortOrder(b.pot);
+          if (potOrderDiff !== 0) return potOrderDiff;
+
+          return a.name.localeCompare(b.name, "ja");
+        });
+
+      const grouped = new Map();
+      sortedTeams.forEach((team) => {
+        const group = typeof team.group === "string" && team.group.trim() ? team.group.trim() : "未分類";
+        if (!grouped.has(group)) {
+          grouped.set(group, []);
+        }
+        grouped.get(group).push(team);
+      });
+
+      const groupNames = Array.from(grouped.keys()).sort((a, b) => {
+        const groupOrderDiff = getGroupSortOrder(a) - getGroupSortOrder(b);
+        if (groupOrderDiff !== 0) return groupOrderDiff;
+        return a.localeCompare(b, "ja");
+      });
+
+      root.innerHTML = groupNames
+        .map((groupName) => {
+          const rows = grouped
+            .get(groupName)
+            .map((team) => {
+              const stage = getTeamStage(team.id);
+              const isConfirmed = isTeamResultConfirmed(team.id);
+              const disabled = stage === "none" ? " disabled" : "";
+
+              return "<tr>"
+                + "<td>" + escapeHtml(team.name) + " (" + team.id + ")</td>"
+                + "<td>" + escapeHtml(POT_LABELS[team.pot] || team.pot || "-") + "</td>"
+                + "<td><select onchange=\"updateTeamResultStage('" + team.id + "', this.value)\">"
+                + buildResultStageOptions(stage)
+                + "</select></td>"
+                + "<td class='center'><input type='checkbox'" + (isConfirmed ? " checked" : "") + disabled + " onchange=\"updateTeamResultConfirmed('" + team.id + "', this.checked)\"></td>"
+                + "</tr>";
+            })
+            .join("");
+
+          const groupClass = getGroupRowClass(groupName);
+          const sectionClass = "result-group-card" + (groupClass ? " " + groupClass : "");
+
+          return "<section class='" + sectionClass + "'>"
+            + "<div class='result-group-head'>" + escapeHtml(groupName) + "</div>"
+            + "<div class='table-wrap'>"
+            + "<table>"
+            + "<thead>"
+            + "<tr>"
+            + "<th>チーム</th>"
+            + "<th>ポット</th>"
+            + "<th>結果</th>"
+            + "<th class='center'>確定</th>"
+            + "</tr>"
+            + "</thead>"
+            + "<tbody>" + rows + "</tbody>"
+            + "</table>"
+            + "</div>"
+            + "</section>";
+        })
+        .join("");
+
+      updateResultCounters();
+    }
+
+    function updateTeamResultStage(teamId, stage) {
+      if (!teamMap.has(teamId)) return;
+      if (!Object.prototype.hasOwnProperty.call(STAGE_ORDER, stage)) return;
+
+      if (!state.results.teamConfirmed || typeof state.results.teamConfirmed !== "object") {
+        state.results.teamConfirmed = {};
+      }
+
+      if (stage === "none") {
+        delete state.results.teamStages[teamId];
+        delete state.results.teamConfirmed[teamId];
+      } else {
+        state.results.teamStages[teamId] = stage;
+      }
+
+      saveState();
+      renderResultsForm();
+      renderPickTable();
+      recalculateAndRender();
+    }
+
+    function updateTeamResultConfirmed(teamId, checked) {
+      if (!teamMap.has(teamId)) return;
+      const stage = getTeamStage(teamId);
+
+      if (!state.results.teamConfirmed || typeof state.results.teamConfirmed !== "object") {
+        state.results.teamConfirmed = {};
+      }
+
+      if (stage === "none") {
+        delete state.results.teamConfirmed[teamId];
+      } else if (checked) {
+        state.results.teamConfirmed[teamId] = true;
+      } else {
+        delete state.results.teamConfirmed[teamId];
+      }
+
+      saveState();
+      renderPickTable();
+      recalculateAndRender();
+    }
+
+    function renderTeamPoints() {
+      const root = document.getElementById("team-points-groups");
+      if (!root) return;
+
+      const summaryRows = state.participants.map((p) => calcParticipantSummary(p));
+
+      root.innerHTML = summaryRows
+        .map((summary) => {
+          const rowsHtml = summary.rows
+            .map((row) => {
+              const rowClass = row.hasTeam && row.isConfirmed ? " class='confirmed-row'" : "";
+              return "<tr" + rowClass + ">"
+                + "<td class='center'>" + row.slot + "</td>"
+                + "<td>" + escapeHtml(row.teamName) + "</td>"
+                + "<td>" + escapeHtml(row.potLabel) + "</td>"
+                + "<td>" + escapeHtml(stageLabel(row.stage)) + "</td>"
+                + "<td class='num'>" + formatNum(row.rankPt) + "</td>"
+                + "<td class='num'>x" + formatNum(row.weight) + "</td>"
+                + "<td class='num'>x" + formatNum(row.favoriteMultiplier) + "</td>"
+                + "<td class='num'>" + formatNum(row.teamPoint) + "</td>"
+                + "</tr>";
+            })
+            .join("");
+
+          return "<section class='participant-points-card'>"
+            + "<div class='participant-points-head'>"
+            + "<div class='participant-name'>" + escapeHtml(summary.participant.name) + "</div>"
+            + "<div class='participant-total'>pt合計: " + formatNum(summary.finalTotal) + "</div>"
+            + "</div>"
+            + "<div class='table-wrap'>"
+            + "<table>"
+            + "<thead>"
+            + "<tr>"
+            + "<th class='center'>枠</th>"
+            + "<th>チーム</th>"
+            + "<th>ポット</th>"
+            + "<th>到達順位</th>"
+            + "<th class='num'>順位pt</th>"
+            + "<th class='num'>重み倍率</th>"
+            + "<th class='num'>お気に入り倍率</th>"
+            + "<th class='num'>チームpt</th>"
+            + "</tr>"
+            + "</thead>"
+            + "<tbody>" + rowsHtml + "</tbody>"
+            + "</table>"
+            + "</div>"
+            + "</section>";
+        })
+        .join("");
+    }
+
+    function renderRanking() {
+      const body = document.getElementById("ranking-body");
+      const summaryRows = state.participants.map((p) => calcParticipantSummary(p));
+
+      summaryRows.sort((a, b) => {
+        if (b.finalTotal !== a.finalTotal) {
+          return b.finalTotal - a.finalTotal;
+        }
+        return a.participant.name.localeCompare(b.participant.name, "ja");
+      });
+
+      let previousScore = null;
+      let displayRank = 0;
+
+      for (let i = 0; i < summaryRows.length; i += 1) {
+        const score = summaryRows[i].finalTotal;
+        if (previousScore === null || Math.abs(score - previousScore) > 1e-9) {
+          displayRank = i + 1;
+          previousScore = score;
+        }
+        summaryRows[i].rank = displayRank;
+      }
+
+      body.innerHTML = summaryRows
+        .map((summary) => {
+          const rowClass = summary.rank === 1 ? " class='ranking-row-top1'" : summary.rank === 2 ? " class='ranking-row-top2'" : "";
+
+          return "<tr" + rowClass + ">"
+            + "<td class='center'>" + escapeHtml(formatRankLabel(summary.rank)) + "</td>"
+            + "<td class='center'>" + escapeHtml(formatRankNumber(summary.rank)) + "</td>"
+            + "<td>" + escapeHtml(summary.participant.name) + "</td>"
+            + "<td class='num'><strong>" + formatNum(summary.finalTotal) + "</strong></td>"
+            + "<td class='center'>" + summary.unconfirmedCount + "</td>"
+            + "</tr>";
+        })
+        .join("");
+    }
+
+    function recalculateAndRender() {
+      renderTeamPoints();
+      renderRanking();
+    }
+
+    function renderAll() {
+      renderPickTable();
+      renderResultsForm();
+      recalculateAndRender();
+    }
+
+    function updatePick(participantIndex, slotIndex, teamId) {
+      const p = state.participants[participantIndex];
+      const previousTeamId = p.picks[slotIndex];
+      p.picks[slotIndex] = teamId;
+
+      if (teamId && teamId !== previousTeamId) {
+        if (!isTeamAllowedForSlot(teamId, slotIndex)) {
+          p.picks[slotIndex] = previousTeamId;
+          flash("チーム" + (slotIndex + 1) + "は" + getSlotAllowedPotLabel(slotIndex) + "のみ選択できます");
+          renderPickTable();
+          recalculateAndRender();
+          return;
+        }
+
+        const occupied = state.participants.find((participant, idx) => idx !== participantIndex && participant.picks.includes(teamId));
+        if (occupied) {
+          p.picks[slotIndex] = previousTeamId;
+          flash("他の参加者が選択済みのチームです: " + occupied.name);
+          renderPickTable();
+          recalculateAndRender();
+          return;
+        }
+
+        const duplicateIndex = p.picks.findIndex((id, index) => index !== slotIndex && id === teamId);
+        if (duplicateIndex !== -1) {
+          p.picks[slotIndex] = "";
+          flash("同一参加者で同じチームは重複選択できません");
+        }
+      }
+
+      if (p.favorite && !p.picks.includes(p.favorite)) {
+        p.favorite = "";
+      }
+
+      saveState();
+      renderPickTable();
+      recalculateAndRender();
+    }
+
+    function updateFavorite(participantIndex, teamId) {
+      const p = state.participants[participantIndex];
+      if (teamId && !p.picks.includes(teamId)) {
+        flash("お気に入りは選択済み4チームの中から選んでください");
+        return;
+      }
+      p.favorite = teamId;
+      saveState();
+      renderPickTable();
+      recalculateAndRender();
+    }
+
+    function init() {
+      try {
+        const initialPayload = loadTeamsPayload();
+        const applyResult = applyTeamsPayload(initialPayload);
+        if (!applyResult.ok) {
+          throw new Error(applyResult.issues.join(" / "));
+        }
+
+        const initialPicksPayload = loadDefaultPicksPayload();
+        const applyPicksResult = applyDefaultPicksPayload(initialPicksPayload);
+        if (!applyPicksResult.ok) {
+          throw new Error(applyPicksResult.issues.join(" / "));
+        }
+
+        const initialResultsPayload = loadDefaultResultsPayload();
+        const applyResultsResult = applyDefaultResultsPayload(initialResultsPayload);
+        if (!applyResultsResult.ok) {
+          throw new Error(applyResultsResult.issues.join(" / "));
+        }
+
+        loadState();
+        normalizeState();
+        saveState();
+        renderAll();
+        showTab("ranking");
+        setAppStatus("チームデータ・選択チーム初期値・結果初期値をHTML内のJSONから読み込みました。", "good");
+        clearGlobalError();
+      } catch (error) {
+        setAppStatus("初期化エラー: " + error.message, "error");
+        showGlobalError("初期化エラー: teams / default-picks / default-results 設定を確認してください。詳細: " + error.message);
+        showTab("rules");
+      }
+    }
+
+    window.saveStateAndNotify = saveStateAndNotify;
+    window.resetAllData = resetAllData;
+    window.updatePick = updatePick;
+    window.updateFavorite = updateFavorite;
+    window.updateTeamResultStage = updateTeamResultStage;
+    window.updateTeamResultConfirmed = updateTeamResultConfirmed;
+    window.exportShareJson = exportShareJson;
+    window.importShareJson = importShareJson;
+    window.exportResultsJson = exportResultsJson;
+    window.importResultsJson = importResultsJson;
+    window.showTab = showTab;
+
+    init();
+  </script>
+</body>
+</html>
