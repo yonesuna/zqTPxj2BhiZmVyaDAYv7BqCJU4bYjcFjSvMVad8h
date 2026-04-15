@@ -37,6 +37,11 @@
       background: linear-gradient(120deg, #0b2d61, #1d4f9a);
       color: #fff;
       border-bottom: 4px solid #f6c343;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
     }
 
     h1 {
@@ -49,6 +54,27 @@
       margin-top: 6px;
       opacity: 0.9;
       font-size: 0.9rem;
+    }
+
+    .header-rules-btn {
+      border: 1px solid rgba(255, 255, 255, 0.85);
+      border-radius: 999px;
+      padding: 6px 12px;
+      font-size: 0.84rem;
+      font-weight: 700;
+      color: #fff;
+      background: rgba(255, 255, 255, 0.16);
+      cursor: pointer;
+    }
+
+    .header-rules-btn.active {
+      background: #fff;
+      color: #0b2d61;
+      border-color: #fff;
+    }
+
+    .header-rules-btn:hover {
+      filter: brightness(0.96);
     }
 
     .top-nav {
@@ -409,6 +435,10 @@
     }
 
     @media (max-width: 820px) {
+      #results .meta-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
       .results-groups {
         grid-template-columns: 1fr;
       }
@@ -432,6 +462,7 @@
 <body>
   <header>
     <h1>ワールドカップ2026</h1>
+    <button type="button" class="header-rules-btn" data-tab-btn="rules" onclick="showTab('rules')">採点ルール</button>
   </header>
 
   <div id="global-error" class="global-error"></div>
@@ -441,7 +472,6 @@
     <button type="button" data-tab-btn="team-points" onclick="showTab('team-points')">ポイント表</button>
     <button type="button" data-tab-btn="results" onclick="showTab('results')">結果入力</button>
     <button type="button" data-tab-btn="picks" onclick="showTab('picks')">選択チーム</button>
-    <button type="button" data-tab-btn="rules" onclick="showTab('rules')">採点ルール</button>
   </nav>
 
   <main>
@@ -549,7 +579,6 @@
 
     <section id="team-points" class="card tab-section" data-tab="team-points">
       <h2>ポイント表</h2>
-      <div class="status">参加者ごとに4チームの明細とpt合計を表示します。確定のチームは薄いグリーンで表示されます。</div>
       <div id="team-points-groups" class="participant-points-list"></div>
     </section>
 
@@ -2183,7 +2212,7 @@
         saveState();
         renderAll();
         showTab("ranking");
-        setAppStatus("チームデータ・選択チーム初期値・結果初期値をHTML内のJSONから読み込みました。", "good");
+        setAppStatus("", "good");
         clearGlobalError();
       } catch (error) {
         setAppStatus("初期化エラー: " + error.message, "error");
