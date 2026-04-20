@@ -199,6 +199,7 @@
       display: grid;
       gap: 12px;
       margin-top: 10px;
+      min-width: 0;
     }
 
     .participant-points-card {
@@ -206,6 +207,8 @@
       border-radius: 10px;
       background: #f8fbff;
       padding: 10px;
+      min-width: 0;
+      overflow: hidden;
     }
 
     .participant-points-head {
@@ -231,6 +234,9 @@
     .participant-points-card .table-wrap {
       max-height: none;
       background: #fff;
+      width: 100%;
+      max-width: 100%;
+      overflow-x: auto;
     }
 
     .num {
