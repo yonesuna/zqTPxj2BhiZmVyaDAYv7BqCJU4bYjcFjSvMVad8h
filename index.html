@@ -2026,9 +2026,12 @@
               const stage = getTeamStage(team.id);
               const isConfirmed = isTeamResultConfirmed(team.id);
               const disabled = stage === "none" ? " disabled" : "";
+              const teamLabel = "<a href='#' class='team-link' onclick='openParticipantPointsByTeam(\"" + team.id + "\"); return false;'>"
+                + escapeHtml(team.name) + " (" + team.id + ")"
+                + "</a>";
 
               return "<tr id='" + getResultTeamRowId(team.id) + "' class='result-team-row'>"
-                + "<td>" + escapeHtml(team.name) + " (" + team.id + ")</td>"
+                + "<td>" + teamLabel + "</td>"
                 + "<td>" + escapeHtml(POT_LABELS[team.pot] || team.pot || "-") + "</td>"
                 + "<td><select onchange=\"updateTeamResultStage('" + team.id + "', this.value)\">"
                 + buildResultStageOptions(stage)
@@ -2123,6 +2126,35 @@
         target.classList.add("target-highlight");
         window.setTimeout(() => target.classList.remove("target-highlight"), 1200);
       });
+    }
+
+    function findTopParticipantByTeam(teamId) {
+      const candidates = state.participants
+        .filter((participant) => Array.isArray(participant.picks) && participant.picks.includes(teamId))
+        .map((participant) => calcParticipantSummary(participant));
+
+      if (candidates.length === 0) return null;
+
+      candidates.sort((a, b) => {
+        if (b.finalTotal !== a.finalTotal) {
+          return b.finalTotal - a.finalTotal;
+        }
+        return a.participant.name.localeCompare(b.participant.name, "ja");
+      });
+
+      return candidates[0].participant;
+    }
+
+    function openParticipantPointsByTeam(teamId) {
+      if (!teamMap.has(teamId)) return;
+
+      const topParticipant = findTopParticipantByTeam(teamId);
+      if (!topParticipant) {
+        flash("このチームを選択している参加者がいません");
+        return;
+      }
+
+      openParticipantPoints(topParticipant.id);
     }
 
     function openResultTeam(teamId) {
@@ -2357,6 +2389,7 @@
     window.exportResultsJson = exportResultsJson;
     window.importResultsJson = importResultsJson;
     window.openParticipantPoints = openParticipantPoints;
+    window.openParticipantPointsByTeam = openParticipantPointsByTeam;
     window.openResultTeam = openResultTeam;
     window.showTab = showTab;
 
