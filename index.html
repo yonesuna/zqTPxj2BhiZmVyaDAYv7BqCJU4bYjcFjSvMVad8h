@@ -308,6 +308,14 @@
       background: #fff;
     }
 
+    .result-group-card.target-highlight {
+      box-shadow: 0 0 0 3px rgba(16, 75, 155, 0.25);
+    }
+
+    .result-team-row.target-highlight td {
+      background: #e8f2ff;
+    }
+
     .result-group-head {
       padding: 8px 10px;
       font-size: 0.84rem;
@@ -405,11 +413,28 @@
       text-underline-offset: 2px;
     }
 
+    .team-link {
+      color: var(--accent);
+      font-weight: 700;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+
     .participant-link:hover {
       filter: brightness(0.92);
     }
 
+    .team-link:hover {
+      filter: brightness(0.92);
+    }
+
     .participant-link:focus-visible {
+      outline: 2px solid #1d4f9a;
+      outline-offset: 2px;
+      border-radius: 4px;
+    }
+
+    .team-link:focus-visible {
       outline: 2px solid #1d4f9a;
       outline-offset: 2px;
       border-radius: 4px;
@@ -1781,6 +1806,7 @@
         return {
           participantName: participant.name,
           slot: slotIndex + 1,
+          teamId: "",
           teamName: "未選択",
           potLabel: "-",
           stage: "none",
@@ -1803,6 +1829,7 @@
       return {
         participantName: participant.name,
         slot: slotIndex + 1,
+        teamId,
         teamName: team.name + " (" + team.id + ")",
         potLabel: POT_LABELS[team.pot] || team.pot,
         stage,
@@ -1950,6 +1977,16 @@
       return "group-bg-" + String(order + 1);
     }
 
+    function getResultsGroupCardId(groupName) {
+      const order = getGroupSortOrder(groupName);
+      if (order === 999) return "results-group-other";
+      return "results-group-" + String(order + 1);
+    }
+
+    function getResultTeamRowId(teamId) {
+      return "result-team-" + String(teamId);
+    }
+
     function renderResultsForm() {
       const root = document.getElementById("results-group-tables");
       if (!root) return;
@@ -1990,7 +2027,7 @@
               const isConfirmed = isTeamResultConfirmed(team.id);
               const disabled = stage === "none" ? " disabled" : "";
 
-              return "<tr>"
+              return "<tr id='" + getResultTeamRowId(team.id) + "' class='result-team-row'>"
                 + "<td>" + escapeHtml(team.name) + " (" + team.id + ")</td>"
                 + "<td>" + escapeHtml(POT_LABELS[team.pot] || team.pot || "-") + "</td>"
                 + "<td><select onchange=\"updateTeamResultStage('" + team.id + "', this.value)\">"
@@ -2004,7 +2041,7 @@
           const groupClass = getGroupRowClass(groupName);
           const sectionClass = "result-group-card" + (groupClass ? " " + groupClass : "");
 
-          return "<section class='" + sectionClass + "'>"
+          return "<section id='" + getResultsGroupCardId(groupName) + "' class='" + sectionClass + "'>"
             + "<div class='result-group-head'>" + escapeHtml(groupName) + "</div>"
             + "<div class='table-wrap'>"
             + "<table>"
@@ -2088,6 +2125,36 @@
       });
     }
 
+    function openResultTeam(teamId) {
+      if (!teamMap.has(teamId)) return;
+      const team = teamMap.get(teamId);
+
+      showTab("results");
+
+      window.requestAnimationFrame(() => {
+        const groupTarget = document.getElementById(getResultsGroupCardId(team.group));
+        const groupHeadTarget = groupTarget ? groupTarget.querySelector(".result-group-head") : null;
+        const teamTarget = document.getElementById(getResultTeamRowId(teamId));
+        const scrollTarget = groupHeadTarget || groupTarget || teamTarget;
+        if (!scrollTarget) return;
+
+        const topNav = document.querySelector(".top-nav");
+        const offset = topNav ? topNav.getBoundingClientRect().height + 10 : 10;
+        const top = window.scrollY + scrollTarget.getBoundingClientRect().top - offset;
+        window.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
+
+        if (groupTarget) {
+          groupTarget.classList.add("target-highlight");
+          window.setTimeout(() => groupTarget.classList.remove("target-highlight"), 1200);
+        }
+
+        if (teamTarget) {
+          teamTarget.classList.add("target-highlight");
+          window.setTimeout(() => teamTarget.classList.remove("target-highlight"), 1200);
+        }
+      });
+    }
+
     function renderTeamPoints() {
       const root = document.getElementById("team-points-groups");
       if (!root) return;
@@ -2099,9 +2166,13 @@
           const rowsHtml = summary.rows
             .map((row) => {
               const rowClass = row.hasTeam && row.isConfirmed ? " class='confirmed-row'" : "";
+              const teamCell = row.hasTeam
+                ? "<a href='#' class='team-link' onclick='openResultTeam(\"" + row.teamId + "\"); return false;'>" + escapeHtml(row.teamName) + "</a>"
+                : escapeHtml(row.teamName);
+
               return "<tr" + rowClass + ">"
                 + "<td class='center'>" + row.slot + "</td>"
-                + "<td>" + escapeHtml(row.teamName) + "</td>"
+                + "<td>" + teamCell + "</td>"
                 + "<td>" + escapeHtml(row.potLabel) + "</td>"
                 + "<td>" + escapeHtml(stageLabel(row.stage)) + "</td>"
                 + "<td class='num'>" + formatNum(row.rankPt) + "</td>"
@@ -2286,6 +2357,7 @@
     window.exportResultsJson = exportResultsJson;
     window.importResultsJson = importResultsJson;
     window.openParticipantPoints = openParticipantPoints;
+    window.openResultTeam = openResultTeam;
     window.showTab = showTab;
 
     init();
