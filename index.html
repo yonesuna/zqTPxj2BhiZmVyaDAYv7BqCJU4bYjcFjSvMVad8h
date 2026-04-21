@@ -211,6 +211,10 @@
       overflow: hidden;
     }
 
+    .participant-points-card.target-highlight {
+      box-shadow: 0 0 0 3px rgba(16, 75, 155, 0.25);
+    }
+
     .participant-points-head {
       display: flex;
       align-items: center;
@@ -394,6 +398,23 @@
       font-weight: 800;
     }
 
+    .participant-link {
+      color: var(--accent);
+      font-weight: 700;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+
+    .participant-link:hover {
+      filter: brightness(0.92);
+    }
+
+    .participant-link:focus-visible {
+      outline: 2px solid #1d4f9a;
+      outline-offset: 2px;
+      border-radius: 4px;
+    }
+
     .ranking-row-top1 td {
       font-size: 1.16rem;
       background: #ffd700;
@@ -472,7 +493,7 @@
 </head>
 <body>
   <header>
-    <h1>ワールドカップ2026!</h1>
+    <h1>ワールドカップ2026</h1>
     <button type="button" class="header-rules-btn" data-tab-btn="rules" onclick="showTab('rules')">採点ルール</button>
   </header>
 
@@ -2047,6 +2068,26 @@
       recalculateAndRender();
     }
 
+    function getParticipantPointsCardId(participantId) {
+      return "participant-points-" + String(participantId);
+    }
+
+    function openParticipantPoints(participantId) {
+      showTab("team-points");
+
+      window.requestAnimationFrame(() => {
+        const target = document.getElementById(getParticipantPointsCardId(participantId));
+        if (!target) return;
+
+        const topNav = document.querySelector(".top-nav");
+        const offset = topNav ? topNav.getBoundingClientRect().height + 10 : 10;
+        const top = window.scrollY + target.getBoundingClientRect().top - offset;
+        window.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
+        target.classList.add("target-highlight");
+        window.setTimeout(() => target.classList.remove("target-highlight"), 1200);
+      });
+    }
+
     function renderTeamPoints() {
       const root = document.getElementById("team-points-groups");
       if (!root) return;
@@ -2071,7 +2112,7 @@
             })
             .join("");
 
-          return "<section class='participant-points-card'>"
+          return "<section id='" + getParticipantPointsCardId(summary.participant.id) + "' class='participant-points-card'>"
             + "<div class='participant-points-head'>"
             + "<div class='participant-name'>" + escapeHtml(summary.participant.name) + "</div>"
             + "<div class='participant-total'>pt合計: " + formatNum(summary.finalTotal) + "</div>"
@@ -2128,7 +2169,9 @@
           return "<tr" + rowClass + ">"
             + "<td class='center'>" + escapeHtml(formatRankLabel(summary.rank)) + "</td>"
             + "<td class='center'>" + escapeHtml(formatRankNumber(summary.rank)) + "</td>"
-            + "<td>" + escapeHtml(summary.participant.name) + "</td>"
+            + "<td><a href='#' class='participant-link' onclick='openParticipantPoints(" + summary.participant.id + "); return false;'>"
+            + escapeHtml(summary.participant.name)
+            + "</a></td>"
             + "<td class='num'><strong>" + formatNum(summary.finalTotal) + "</strong></td>"
             + "<td class='center'>" + summary.unconfirmedCount + "</td>"
             + "</tr>";
@@ -2242,6 +2285,7 @@
     window.importShareJson = importShareJson;
     window.exportResultsJson = exportResultsJson;
     window.importResultsJson = importResultsJson;
+    window.openParticipantPoints = openParticipantPoints;
     window.showTab = showTab;
 
     init();
