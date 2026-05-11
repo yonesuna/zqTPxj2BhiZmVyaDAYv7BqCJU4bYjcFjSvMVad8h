@@ -349,8 +349,17 @@
       white-space: nowrap;
     }
 
+    .team-group-col {
+      white-space: nowrap;
+      color: var(--muted);
+    }
+
     @media (max-width: 480px) {
       .result-participants-col {
+        display: none;
+      }
+
+      .team-group-col {
         display: none;
       }
     }
@@ -2152,7 +2161,11 @@
 
               const participantNames = state.participants
                 .filter(function(p) { return Array.isArray(p.picks) && p.picks.includes(team.id); })
-                .map(function(p) { return escapeHtml(p.name); })
+                .map(function(p) {
+                  return "<a href='#' class='participant-link' onclick='openParticipantPoints(" + p.id + "); return false;'>"
+                    + escapeHtml(p.name)
+                    + "</a>";
+                })
                 .join(", ");
 
               return "<tr id='" + getResultTeamRowId(team.id) + "' class='result-team-row'>"
@@ -2328,10 +2341,14 @@
               const teamCell = row.hasTeam
                 ? "<a href='#' class='team-link' onclick='openResultTeam(\"" + row.teamId + "\"); return false;'>" + escapeHtml(row.teamName) + "</a>"
                 : escapeHtml(row.teamName);
+              const groupCell = row.hasTeam
+                ? escapeHtml((teamMap.get(row.teamId) && teamMap.get(row.teamId).group) || "-")
+                : "-";
 
               return "<tr" + rowClass + ">"
                 + "<td class='center'>" + row.slot + "</td>"
                 + "<td>" + teamCell + "</td>"
+                + "<td class='team-group-col'>" + groupCell + "</td>"
                 + "<td>" + escapeHtml(row.potLabel) + "</td>"
                 + "<td>" + escapeHtml(stageLabel(row.stage)) + "</td>"
                 + "<td class='num'>" + formatNum(row.rankPt) + "</td>"
@@ -2353,6 +2370,7 @@
             + "<tr>"
             + "<th class='center'>枠</th>"
             + "<th>チーム</th>"
+            + "<th class='team-group-col'>グループ</th>"
             + "<th>ポット</th>"
             + "<th>到達順位</th>"
             + "<th class='num'>順位pt</th>"
