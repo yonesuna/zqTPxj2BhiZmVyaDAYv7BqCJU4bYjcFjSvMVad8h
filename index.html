@@ -343,6 +343,18 @@
     .result-group-card.group-bg-11 .result-group-head { background: #f4fbff; }
     .result-group-card.group-bg-12 .result-group-head { background: #fff9f2; }
 
+    .result-participants-col {
+      font-size: 0.78rem;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    @media (max-width: 480px) {
+      .result-participants-col {
+        display: none;
+      }
+    }
+
     .actions {
       display: flex;
       gap: 8px;
@@ -2138,8 +2150,14 @@
                 + escapeHtml(team.name) + " (" + team.id + ")"
                 + "</a>";
 
+              const participantNames = state.participants
+                .filter(function(p) { return Array.isArray(p.picks) && p.picks.includes(team.id); })
+                .map(function(p) { return escapeHtml(p.name); })
+                .join(", ");
+
               return "<tr id='" + getResultTeamRowId(team.id) + "' class='result-team-row'>"
                 + "<td>" + teamLabel + "</td>"
+                + "<td class='result-participants-col'>" + participantNames + "</td>"
                 + "<td>" + escapeHtml(POT_LABELS[team.pot] || team.pot || "-") + "</td>"
                 + "<td><select onchange=\"updateTeamResultStage('" + team.id + "', this.value)\">"
                 + buildResultStageOptions(stage)
@@ -2159,6 +2177,7 @@
             + "<thead>"
             + "<tr>"
             + "<th>チーム</th>"
+            + "<th class='result-participants-col'>参加者</th>"
             + "<th>ポット</th>"
             + "<th>結果</th>"
             + "<th class='center'>確定</th>"
