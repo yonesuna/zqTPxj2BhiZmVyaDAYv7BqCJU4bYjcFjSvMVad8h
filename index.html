@@ -997,6 +997,9 @@
       results: {
         teamStages: {},
         teamConfirmed: {}
+      },
+      meta: {
+        defaultResultsSignature: ""
       }
     };
 
@@ -1021,6 +1024,64 @@
       return {
         teamStages: { ...defaultResultTeamStages },
         teamConfirmed: { ...defaultResultTeamConfirmed }
+      };
+    }
+
+    function hasPresetResults(results) {
+      if (!results || typeof results !== "object") return false;
+
+      const teamStages =
+        results.teamStages && typeof results.teamStages === "object" && !Array.isArray(results.teamStages)
+          ? Object.keys(results.teamStages)
+          : [];
+      const teamConfirmed =
+        results.teamConfirmed && typeof results.teamConfirmed === "object" && !Array.isArray(results.teamConfirmed)
+          ? Object.keys(results.teamConfirmed)
+          : [];
+
+      return teamStages.length > 0 || teamConfirmed.length > 0;
+    }
+
+    function buildResultsSignature(results) {
+      const safeResults = sanitizeResultsPayload(results);
+      const stagePairs = Object.keys(safeResults.teamStages)
+        .sort()
+        .map((teamId) => [teamId, safeResults.teamStages[teamId]]);
+      const confirmedIds = Object.keys(safeResults.teamConfirmed)
+        .filter((teamId) => safeResults.teamConfirmed[teamId] === true)
+        .sort();
+
+      return JSON.stringify({
+        teamStages: stagePairs,
+        teamConfirmed: confirmedIds
+      });
+    }
+
+    function syncResultsWithEmbeddedDefaults() {
+      const defaultResults = makeDefaultResults();
+      const defaultSignature = buildResultsSignature(defaultResults);
+
+      const currentMeta =
+        state.meta && typeof state.meta === "object" && !Array.isArray(state.meta)
+          ? state.meta
+          : {};
+
+      const storedSignature =
+        typeof currentMeta.defaultResultsSignature === "string"
+          ? currentMeta.defaultResultsSignature
+          : "";
+
+      const shouldApplyDefaultResults =
+        (storedSignature && storedSignature !== defaultSignature)
+        || (!storedSignature && hasPresetResults(defaultResults));
+
+      if (shouldApplyDefaultResults) {
+        state.results = defaultResults;
+      }
+
+      state.meta = {
+        ...currentMeta,
+        defaultResultsSignature: defaultSignature
       };
     }
 
@@ -1724,11 +1785,15 @@
         if (!raw) {
           state.participants = makeDefaultParticipants();
           state.results = makeDefaultResults();
+          state.meta = {};
           return;
         }
         const parsed = JSON.parse(raw);
         state.participants = parsed.participants;
         state.results = parsed.results;
+        state.meta = parsed && parsed.meta && typeof parsed.meta === "object" && !Array.isArray(parsed.meta)
+          ? parsed.meta
+          : {};
 
         const storedHasSelections = hasAnySelectionData(state.participants);
         const defaultHasSelections = hasAnySelectionData(defaultPickParticipants);
@@ -1738,6 +1803,7 @@
       } catch (_error) {
         state.participants = makeDefaultParticipants();
         state.results = makeDefaultResults();
+        state.meta = {};
       }
     }
 
@@ -1765,6 +1831,10 @@
 
       if (!state.results || typeof state.results !== "object") {
         state.results = makeDefaultResults();
+      }
+
+      if (!state.meta || typeof state.meta !== "object" || Array.isArray(state.meta)) {
+        state.meta = {};
       }
 
       const rawStages =
@@ -2461,6 +2531,7 @@
         }
 
         loadState();
+        syncResultsWithEmbeddedDefaults();
         normalizeState();
         saveState();
         renderAll();
