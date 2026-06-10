@@ -6,7 +6,7 @@
   <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0" />
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
-  <title>ワールドカップ2026!</title>
+  <title>ワールドカップ2026</title>
   <style>
     :root {
       --bg: #f4f6fb;
@@ -539,7 +539,7 @@
 </head>
 <body>
   <header>
-    <h1>ワールドカップ2026!</h1>
+    <h1>ワールドカップ2026</h1>
     <button type="button" class="header-rules-btn" data-tab-btn="rules" onclick="showTab('rules')">採点ルール</button>
   </header>
 
@@ -1027,21 +1027,6 @@
       };
     }
 
-    function hasPresetResults(results) {
-      if (!results || typeof results !== "object") return false;
-
-      const teamStages =
-        results.teamStages && typeof results.teamStages === "object" && !Array.isArray(results.teamStages)
-          ? Object.keys(results.teamStages)
-          : [];
-      const teamConfirmed =
-        results.teamConfirmed && typeof results.teamConfirmed === "object" && !Array.isArray(results.teamConfirmed)
-          ? Object.keys(results.teamConfirmed)
-          : [];
-
-      return teamStages.length > 0 || teamConfirmed.length > 0;
-    }
-
     function buildResultsSignature(results) {
       const safeResults = sanitizeResultsPayload(results);
       const stagePairs = Object.keys(safeResults.teamStages)
@@ -1060,6 +1045,8 @@
     function syncResultsWithEmbeddedDefaults() {
       const defaultResults = makeDefaultResults();
       const defaultSignature = buildResultsSignature(defaultResults);
+      const emptyDefaultSignature = buildResultsSignature({ teamStages: {}, teamConfirmed: {} });
+      const currentResultsSignature = buildResultsSignature(state.results);
 
       const currentMeta =
         state.meta && typeof state.meta === "object" && !Array.isArray(state.meta)
@@ -1071,9 +1058,19 @@
           ? currentMeta.defaultResultsSignature
           : "";
 
+      if (defaultSignature === emptyDefaultSignature) {
+        state.results = defaultResults;
+        state.meta = {
+          ...currentMeta,
+          defaultResultsSignature: defaultSignature
+        };
+        return;
+      }
+
+      const hasStoredSignature = storedSignature !== "";
       const shouldApplyDefaultResults =
-        (storedSignature && storedSignature !== defaultSignature)
-        || (!storedSignature && hasPresetResults(defaultResults));
+        (hasStoredSignature && storedSignature !== defaultSignature)
+        || (!hasStoredSignature && currentResultsSignature !== defaultSignature);
 
       if (shouldApplyDefaultResults) {
         state.results = defaultResults;
