@@ -1722,14 +1722,15 @@
       if (tableWrap) {
         const rowRect = targetRow.getBoundingClientRect();
         const wrapRect = tableWrap.getBoundingClientRect();
+        const stickyHeader = tableWrap.querySelector("thead");
+        const stickyHeaderHeight = stickyHeader ? stickyHeader.getBoundingClientRect().height : 0;
         const targetScrollTop = tableWrap.scrollTop
           + (rowRect.top - wrapRect.top)
-          - (tableWrap.clientHeight / 2)
-          + (rowRect.height / 2);
+          - stickyHeaderHeight;
 
         tableWrap.scrollTo({ top: Math.max(0, targetScrollTop), behavior: "smooth" });
       } else {
-        targetRow.scrollIntoView({ behavior: "smooth", block: "center" });
+        targetRow.scrollIntoView({ behavior: "smooth", block: "start" });
       }
     }
 
