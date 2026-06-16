@@ -778,6 +778,26 @@
       <div id="team-points-groups" class="participant-points-list"></div>
     </section>
 
+    <section id="participant-records" class="card tab-section" data-tab="ranking">
+      <h2>参加者勝敗表</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th class="center">No</th>
+              <th>参加者</th>
+              <th class="num">試合数</th>
+              <th class="num">勝ち</th>
+              <th class="num">負け</th>
+              <th class="num">引き分け</th>
+            </tr>
+          </thead>
+          <tbody id="participant-records-body"></tbody>
+        </table>
+      </div>
+      <div id="participant-records-status" class="status">埋め込みCSVを読み込み中...</div>
+    </section>
+
     <section id="ranking" class="card tab-section active" data-tab="ranking">
       <h2>順位表</h2>
       <div class="table-wrap">
@@ -1079,6 +1099,8 @@
     const GROUP_REFERENCE_BASE_URL = "https://soccer.yahoo.co.jp/wcup/category/2026/cups/159/31457";
     const GROUP_REFERENCE_TARGET_NAME = "wc2026-group-reference";
     const MATCH_CSV_FILE_PATH = "embedded-match.csv";
+    let embeddedCompletedMatches = null;
+    let embeddedMatchParseError = "";
 
     const STAGE_ORDER = {
       eliminated: 0,
@@ -1484,6 +1506,13 @@
       el.className = "status" + (kind ? " " + kind : "");
     }
 
+    function setParticipantRecordsStatus(message, kind) {
+      const el = document.getElementById("participant-records-status");
+      if (!el) return;
+      el.textContent = message;
+      el.className = "status" + (kind ? " " + kind : "");
+    }
+
     function parseCsvText(text) {
       const source = String(text || "").replace(/^\uFEFF/, "");
       const rows = [];
@@ -1529,6 +1558,159 @@
       }
 
       return rows;
+    }
+
+    function extractCompletedMatchesFromCsvRows(rows) {
+      if (!Array.isArray(rows) || rows.length === 0) {
+        return {
+          ok: false,
+          message: "埋め込みCSVが空です。",
+          matches: []
+        };
+      }
+
+      const headers = Array.isArray(rows[0]) ? rows[0].map((value) => String(value)) : [];
+      const requiredHeaders = ["ホーム", "スコア", "アウェイ"];
+      const headerIndex = {};
+      headers.forEach((header, index) => {
+        headerIndex[header] = index;
+      });
+
+      const missingHeaders = requiredHeaders.filter((header) => !Object.prototype.hasOwnProperty.call(headerIndex, header));
+      if (headers.length === 0 || missingHeaders.length > 0) {
+        return {
+          ok: false,
+          message: "埋め込みCSVのヘッダーを解釈できませんでした。",
+          matches: []
+        };
+      }
+
+      const dataRows = rows
+        .slice(1)
+        .filter((row) => Array.isArray(row) && row.some((cell) => String(cell).trim() !== ""));
+
+      const matches = [];
+      dataRows.forEach((row) => {
+        const homeId = String(typeof row[headerIndex["ホーム"]] === "undefined" ? "" : row[headerIndex["ホーム"]]).trim();
+        const awayId = String(typeof row[headerIndex["アウェイ"]] === "undefined" ? "" : row[headerIndex["アウェイ"]]).trim();
+        const scoreText = String(typeof row[headerIndex["スコア"]] === "undefined" ? "" : row[headerIndex["スコア"]]).trim();
+        const score = parseMatchScoreValues(scoreText);
+
+        if (!homeId || !awayId || !score) return;
+
+        matches.push({
+          homeId,
+          awayId,
+          homeScore: score.home,
+          awayScore: score.away
+        });
+      });
+
+      return {
+        ok: true,
+        message: "",
+        matches
+      };
+    }
+
+    function buildParticipantMatchRecordRows() {
+      const statsByParticipantId = new Map();
+      const ownerIdsByTeamId = new Map();
+
+      state.participants.forEach((participant) => {
+        statsByParticipantId.set(participant.id, {
+          participantId: participant.id,
+          participantName: participant.name,
+          matches: 0,
+          wins: 0,
+          losses: 0,
+          draws: 0
+        });
+
+        const picks = uniq(
+          (Array.isArray(participant.picks) ? participant.picks : [])
+            .filter((teamId) => typeof teamId === "string" && teamId.trim() !== "")
+        );
+
+        picks.forEach((teamId) => {
+          if (!ownerIdsByTeamId.has(teamId)) {
+            ownerIdsByTeamId.set(teamId, []);
+          }
+
+          const ownerIds = ownerIdsByTeamId.get(teamId);
+          if (!ownerIds.includes(participant.id)) {
+            ownerIds.push(participant.id);
+          }
+        });
+      });
+
+      const applyMatchResult = (teamId, resultKey) => {
+        const ownerIds = ownerIdsByTeamId.get(teamId);
+        if (!ownerIds) return;
+
+        ownerIds.forEach((participantId) => {
+          const stats = statsByParticipantId.get(participantId);
+          if (!stats) return;
+
+          stats.matches += 1;
+          if (resultKey === "win") stats.wins += 1;
+          if (resultKey === "loss") stats.losses += 1;
+          if (resultKey === "draw") stats.draws += 1;
+        });
+      };
+
+      (Array.isArray(embeddedCompletedMatches) ? embeddedCompletedMatches : []).forEach((match) => {
+        if (match.homeScore > match.awayScore) {
+          applyMatchResult(match.homeId, "win");
+          applyMatchResult(match.awayId, "loss");
+        } else if (match.homeScore < match.awayScore) {
+          applyMatchResult(match.homeId, "loss");
+          applyMatchResult(match.awayId, "win");
+        } else {
+          applyMatchResult(match.homeId, "draw");
+          applyMatchResult(match.awayId, "draw");
+        }
+      });
+
+      return state.participants.map((participant) => statsByParticipantId.get(participant.id));
+    }
+
+    function renderParticipantMatchRecords() {
+      const body = document.getElementById("participant-records-body");
+      if (!body) return;
+
+      if (embeddedMatchParseError) {
+        body.innerHTML = "";
+        setParticipantRecordsStatus("参加者勝敗表を表示できません: " + embeddedMatchParseError, "error");
+        return;
+      }
+
+      if (!Array.isArray(embeddedCompletedMatches)) {
+        body.innerHTML = "";
+        setParticipantRecordsStatus("埋め込みCSVを読み込み中...", "");
+        return;
+      }
+
+      const rows = buildParticipantMatchRecordRows();
+      body.innerHTML = rows
+        .map((row, index) => {
+          return "<tr>"
+            + "<td class='center'>" + (index + 1) + "</td>"
+            + "<td><a href='#' class='participant-link' onclick='openParticipantPoints(" + row.participantId + "); return false;'>"
+            + escapeHtml(row.participantName)
+            + "</a></td>"
+            + "<td class='num'>" + row.matches + "</td>"
+            + "<td class='num'>" + row.wins + "</td>"
+            + "<td class='num'>" + row.losses + "</td>"
+            + "<td class='num'>" + row.draws + "</td>"
+            + "</tr>";
+        })
+        .join("");
+
+      setParticipantRecordsStatus(
+        "embedded-match.csv のスコア確定試合 " + embeddedCompletedMatches.length + " 件を集計中。",
+        embeddedCompletedMatches.length > 0 ? "good" : "warn"
+      );
     }
 
     function renderMatchCsvTable(rows) {
@@ -1672,14 +1854,31 @@
 
     function loadMatchCsvData() {
       setMatchCsvStatus("CSVファイルを読み込み中...", "");
+      embeddedCompletedMatches = null;
+      embeddedMatchParseError = "";
+      renderParticipantMatchRecords();
 
       try {
         const csvText = getEmbeddedMatchCsvText();
         const parsedRows = parseCsvText(csvText);
+        const extractedMatches = extractCompletedMatchesFromCsvRows(parsedRows);
+
+        if (extractedMatches.ok) {
+          embeddedCompletedMatches = extractedMatches.matches;
+          embeddedMatchParseError = "";
+        } else {
+          embeddedCompletedMatches = [];
+          embeddedMatchParseError = extractedMatches.message;
+        }
+
         renderMatchCsvTable(parsedRows);
+        renderParticipantMatchRecords();
       } catch (error) {
         const message = error && error.message ? error.message : "読み込みエラー";
+        embeddedCompletedMatches = [];
+        embeddedMatchParseError = "CSVファイルの読み込みに失敗しました（" + message + "）。";
         setMatchCsvStatus("CSVファイルの読み込みに失敗しました（" + message + "）。", "error");
+        renderParticipantMatchRecords();
       }
     }
 
@@ -2999,6 +3198,7 @@
     function recalculateAndRender() {
       renderTeamPoints();
       renderRanking();
+      renderParticipantMatchRecords();
     }
 
     function renderAll() {
