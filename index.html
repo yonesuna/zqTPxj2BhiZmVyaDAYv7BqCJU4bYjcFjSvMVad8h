@@ -784,7 +784,7 @@
         <table>
           <thead>
             <tr>
-              <th class="center">No</th>
+              <th class="center">順位</th>
               <th>参加者</th>
               <th class="num">試合数</th>
               <th class="num">勝ち</th>
@@ -1672,7 +1672,33 @@
         }
       });
 
-      return state.participants.map((participant) => statsByParticipantId.get(participant.id));
+      const rows = state.participants
+        .map((participant) => statsByParticipantId.get(participant.id))
+        .map((row) => ({
+          ...row,
+          rankingScore: row.wins * 3 + row.draws + row.matches * 0.1
+        }));
+
+      rows.sort((a, b) => {
+        if (Math.abs(b.rankingScore - a.rankingScore) > 1e-9) return b.rankingScore - a.rankingScore;
+        if (b.wins !== a.wins) return b.wins - a.wins;
+        if (b.draws !== a.draws) return b.draws - a.draws;
+        if (a.losses !== b.losses) return a.losses - b.losses;
+        if (b.matches !== a.matches) return b.matches - a.matches;
+        return a.participantName.localeCompare(b.participantName, "ja");
+      });
+
+      let previousScore = null;
+      let displayRank = 0;
+      rows.forEach((row, index) => {
+        if (previousScore === null || Math.abs(row.rankingScore - previousScore) > 1e-9) {
+          displayRank = index + 1;
+          previousScore = row.rankingScore;
+        }
+        row.rank = displayRank;
+      });
+
+      return rows;
     }
 
     function renderParticipantMatchRecords() {
@@ -1693,9 +1719,9 @@
 
       const rows = buildParticipantMatchRecordRows();
       body.innerHTML = rows
-        .map((row, index) => {
+        .map((row) => {
           return "<tr>"
-            + "<td class='center'>" + (index + 1) + "</td>"
+            + "<td class='center'>" + row.rank + "</td>"
             + "<td><a href='#' class='participant-link' onclick='openParticipantPoints(" + row.participantId + "); return false;'>"
             + escapeHtml(row.participantName)
             + "</a></td>"
@@ -1707,10 +1733,7 @@
         })
         .join("");
 
-      setParticipantRecordsStatus(
-        "embedded-match.csv のスコア確定試合 " + embeddedCompletedMatches.length + " 件を集計中。",
-        embeddedCompletedMatches.length > 0 ? "good" : "warn"
-      );
+      setParticipantRecordsStatus("", "");
     }
 
     function renderMatchCsvTable(rows) {
