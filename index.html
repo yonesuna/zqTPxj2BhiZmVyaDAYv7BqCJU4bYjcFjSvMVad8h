@@ -816,6 +816,24 @@
       </div>
     </section>
 
+    <section id="goal-scorers" class="card tab-section" data-tab="ranking">
+      <h2>得点王表</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>国</th>
+              <th>選手名</th>
+              <th>参加者</th>
+              <th class="num">得点</th>
+            </tr>
+          </thead>
+          <tbody id="goal-scorers-body"></tbody>
+        </table>
+      </div>
+      <div id="goal-scorers-status" class="status">goal_list.csvを読み込み中...</div>
+    </section>
+
     <section id="match-csv" class="card tab-section" data-tab="match-csv">
       <h2>試合</h2>
       <div class="table-wrap">
@@ -1099,8 +1117,11 @@
     const GROUP_REFERENCE_BASE_URL = "https://soccer.yahoo.co.jp/wcup/category/2026/cups/159/31457";
     const GROUP_REFERENCE_TARGET_NAME = "wc2026-group-reference";
     const MATCH_CSV_FILE_PATH = "embedded-match.csv";
+    const GOAL_LIST_CSV_FILE_PATH = "goal_list.csv";
     let embeddedCompletedMatches = null;
     let embeddedMatchParseError = "";
+    let goalScorerRows = null;
+    let goalScorerParseError = "";
 
     const STAGE_ORDER = {
       eliminated: 0,
@@ -1372,6 +1393,25 @@
       return csvText;
     }
 
+    function getGoalListCsvText() {
+      const request = new XMLHttpRequest();
+      request.open("GET", GOAL_LIST_CSV_FILE_PATH, false);
+      request.send(null);
+
+      const status = Number(request.status);
+      const statusOk = (status >= 200 && status < 300) || status === 0;
+      if (!statusOk) {
+        throw new Error("CSVファイルの読み込みに失敗しました (HTTP " + status + ")");
+      }
+
+      const csvText = String(request.responseText || "").trim();
+      if (!csvText) {
+        throw new Error("CSVファイルが空です");
+      }
+
+      return csvText;
+    }
+
     function buildDefaultPickOwnersMap(payload) {
       const ownersByTeam = new Map();
       const participants = payload && Array.isArray(payload.participants) ? payload.participants : [];
@@ -1513,6 +1553,13 @@
       el.className = "status" + (kind ? " " + kind : "");
     }
 
+    function setGoalScorersStatus(message, kind) {
+      const el = document.getElementById("goal-scorers-status");
+      if (!el) return;
+      el.textContent = message;
+      el.className = "status" + (kind ? " " + kind : "");
+    }
+
     function parseCsvText(text) {
       const source = String(text || "").replace(/^\uFEFF/, "");
       const rows = [];
@@ -1610,6 +1657,76 @@
         ok: true,
         message: "",
         matches
+      };
+    }
+
+    function extractGoalScorerRowsFromCsvRows(rows) {
+      if (!Array.isArray(rows) || rows.length === 0) {
+        return {
+          ok: false,
+          message: "goal_list.csv が空です。",
+          rows: []
+        };
+      }
+
+      const headers = Array.isArray(rows[0]) ? rows[0].map((value) => String(value)) : [];
+      const requiredHeaders = ["国", "選手名", "参加者", "得点"];
+      const headerIndex = {};
+      headers.forEach((header, index) => {
+        headerIndex[header] = index;
+      });
+
+      const missingHeaders = requiredHeaders.filter((header) => !Object.prototype.hasOwnProperty.call(headerIndex, header));
+      if (headers.length === 0 || missingHeaders.length > 0) {
+        return {
+          ok: false,
+          message: "goal_list.csv のヘッダーを解釈できませんでした。",
+          rows: []
+        };
+      }
+
+      const dataRows = rows
+        .slice(1)
+        .filter((row) => Array.isArray(row) && row.some((cell) => String(cell).trim() !== ""));
+
+      const parsedRows = dataRows.map((row, index) => {
+        const country = String(typeof row[headerIndex["国"]] === "undefined" ? "" : row[headerIndex["国"]]).trim();
+        const playerName = String(typeof row[headerIndex["選手名"]] === "undefined" ? "" : row[headerIndex["選手名"]]).trim();
+        const participant = String(typeof row[headerIndex["参加者"]] === "undefined" ? "" : row[headerIndex["参加者"]]).trim();
+        const goalsText = String(typeof row[headerIndex["得点"]] === "undefined" ? "" : row[headerIndex["得点"]]).trim();
+        const goals = goalsText === "" ? null : Number(goalsText);
+
+        return {
+          country,
+          playerName,
+          participant,
+          goalsText,
+          goals: Number.isFinite(goals) ? goals : null,
+          hasParticipant: participant !== "",
+          originalIndex: index
+        };
+      });
+
+      parsedRows.sort((a, b) => {
+        const aGoals = a.goals === null ? Number.NEGATIVE_INFINITY : a.goals;
+        const bGoals = b.goals === null ? Number.NEGATIVE_INFINITY : b.goals;
+
+        if (bGoals !== aGoals) return bGoals - aGoals;
+        if (a.hasParticipant !== b.hasParticipant) return a.hasParticipant ? -1 : 1;
+
+        const countryOrder = a.country.localeCompare(b.country, "ja");
+        if (countryOrder !== 0) return countryOrder;
+
+        const playerOrder = a.playerName.localeCompare(b.playerName, "ja");
+        if (playerOrder !== 0) return playerOrder;
+
+        return a.originalIndex - b.originalIndex;
+      });
+
+      return {
+        ok: true,
+        message: "",
+        rows: parsedRows
       };
     }
 
@@ -1734,6 +1851,45 @@
         .join("");
 
       setParticipantRecordsStatus("", "");
+    }
+
+    function renderGoalScorers() {
+      const body = document.getElementById("goal-scorers-body");
+      if (!body) return;
+
+      if (goalScorerParseError) {
+        body.innerHTML = "";
+        setGoalScorersStatus("得点王表を表示できません: " + goalScorerParseError, "error");
+        return;
+      }
+
+      if (!Array.isArray(goalScorerRows)) {
+        body.innerHTML = "";
+        setGoalScorersStatus("goal_list.csv を読み込み中...", "");
+        return;
+      }
+
+      if (goalScorerRows.length === 0) {
+        body.innerHTML = "";
+        setGoalScorersStatus("表示できるデータがありません。", "warn");
+        return;
+      }
+
+      body.innerHTML = goalScorerRows
+        .map((row) => {
+          const participantLabel = row.participant || "-";
+          const goalsLabel = row.goals === null ? "" : escapeHtml(String(row.goals));
+
+          return "<tr>"
+            + "<td>" + escapeHtml(row.country || "-") + "</td>"
+            + "<td>" + escapeHtml(row.playerName || "-") + "</td>"
+            + "<td>" + escapeHtml(participantLabel) + "</td>"
+            + "<td class='num'>" + goalsLabel + "</td>"
+            + "</tr>";
+        })
+        .join("");
+
+      setGoalScorersStatus("goal_list.csv を表示中（" + goalScorerRows.length + "件）。", "good");
     }
 
     function renderMatchCsvTable(rows) {
@@ -1902,6 +2058,34 @@
         embeddedMatchParseError = "CSVファイルの読み込みに失敗しました（" + message + "）。";
         setMatchCsvStatus("CSVファイルの読み込みに失敗しました（" + message + "）。", "error");
         renderParticipantMatchRecords();
+      }
+    }
+
+    function loadGoalScorersCsvData() {
+      setGoalScorersStatus("goal_list.csv を読み込み中...", "");
+      goalScorerRows = null;
+      goalScorerParseError = "";
+      renderGoalScorers();
+
+      try {
+        const csvText = getGoalListCsvText();
+        const parsedRows = parseCsvText(csvText);
+        const extractedRows = extractGoalScorerRowsFromCsvRows(parsedRows);
+
+        if (extractedRows.ok) {
+          goalScorerRows = extractedRows.rows;
+          goalScorerParseError = "";
+        } else {
+          goalScorerRows = [];
+          goalScorerParseError = extractedRows.message;
+        }
+
+        renderGoalScorers();
+      } catch (error) {
+        const message = error && error.message ? error.message : "読み込みエラー";
+        goalScorerRows = [];
+        goalScorerParseError = "CSVファイルの読み込みに失敗しました（" + message + "）。";
+        renderGoalScorers();
       }
     }
 
@@ -3222,6 +3406,7 @@
       renderTeamPoints();
       renderRanking();
       renderParticipantMatchRecords();
+      renderGoalScorers();
     }
 
     function renderAll() {
@@ -3308,6 +3493,7 @@
         saveState();
         renderAll();
         loadMatchCsvData();
+        loadGoalScorersCsvData();
         showTab("ranking");
         setAppStatus("", "good");
         clearGlobalError();
