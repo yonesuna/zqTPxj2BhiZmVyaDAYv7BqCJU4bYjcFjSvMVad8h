@@ -1441,13 +1441,30 @@
       return ownersByTeam;
     }
 
-    function getDefaultPickOwnersLabel(teamId) {
+    function buildMatchOwnerLinksHtml(teamId) {
       if (!teamId) return "-";
+
       const owners = defaultPickOwnersByTeamId.get(teamId);
       if (!Array.isArray(owners) || owners.length === 0) {
         return "-";
       }
-      return owners.join(", ");
+
+      const participants = state && Array.isArray(state.participants)
+        ? state.participants
+        : [];
+
+      return owners
+        .map((ownerName) => {
+          const participant = participants.find((row) => row && row.name === ownerName);
+          if (!participant) {
+            return escapeHtml(ownerName);
+          }
+
+          return "<a href='#' class='participant-link' onclick='openParticipantPoints(" + participant.id + "); return false;'>"
+            + escapeHtml(ownerName)
+            + "</a>";
+        })
+        .join(", ");
     }
 
     function isFavoriteTeamId(teamId) {
@@ -1475,12 +1492,17 @@
     function buildMatchTeamCellHtml(teamId) {
       const team = teamMap.get(teamId);
       const teamName = team && team.name ? team.name : "不明";
-      const ownersLabel = getDefaultPickOwnersLabel(teamId);
+      const teamLabel = team && team.id
+        ? "<a href='#' class='team-link' onclick='openResultTeam(\"" + team.id + "\"); return false;'>"
+          + buildTeamNameWithFavoriteIconHtml(teamName, team.id)
+          + "</a>"
+        : buildTeamNameWithFavoriteIconHtml(teamName, teamId);
+      const ownersLabel = buildMatchOwnerLinksHtml(teamId);
 
       return "<span class='match-team-cell'>"
-        + buildTeamNameWithFavoriteIconHtml(teamName, teamId)
+        + teamLabel
         + "<span class='match-team-owner'>"
-        + "(" + escapeHtml(ownersLabel) + ")"
+        + "(" + ownersLabel + ")"
         + "</span>"
         + "</span>";
     }
