@@ -905,25 +905,6 @@
 }
   </script>
 
-  <script id="default-results-json" type="application/json">
-{
-  "teamStages": {
-    "MEX": "best32",
-    "USA": "best32",
-    "GER": "best32",
-    "ARG": "best32",
-    "HAI": "eliminated",
-    "TUR": "eliminated",
-    "TUN": "eliminated"
-  },
-  "teamConfirmed": {
-    "HAI": true,
-    "TUR": true,
-    "TUN": true
-  }
-}
-  </script>
-
   <script id="default-picks-json" type="application/json">
 {
   "participants": [
@@ -1128,6 +1109,7 @@
 
     const GROUP_REFERENCE_BASE_URL = "https://soccer.yahoo.co.jp/wcup/category/2026/cups/159/31457";
     const GROUP_REFERENCE_TARGET_NAME = "wc2026-group-reference";
+    const DEFAULT_RESULTS_JSON_FILE_PATH = "default-results.json";
     const MATCH_CSV_FILE_PATH = "embedded-match.csv";
     const GOAL_LIST_CSV_FILE_PATH = "goal_list.csv";
     let embeddedCompletedMatches = null;
@@ -1422,6 +1404,25 @@
       }
 
       return csvText;
+    }
+
+    function getDefaultResultsJsonText() {
+      const request = new XMLHttpRequest();
+      request.open("GET", DEFAULT_RESULTS_JSON_FILE_PATH, false);
+      request.send(null);
+
+      const status = Number(request.status);
+      const statusOk = (status >= 200 && status < 300) || status === 0;
+      if (!statusOk) {
+        throw new Error("default-results.json の読み込みに失敗しました (HTTP " + status + ")");
+      }
+
+      const jsonText = String(request.responseText || "").trim();
+      if (!jsonText) {
+        throw new Error("default-results.json が空です");
+      }
+
+      return jsonText;
     }
 
     function buildDefaultPickOwnersMap(payload) {
@@ -2371,11 +2372,7 @@
     }
 
     function getEmbeddedDefaultResultsPayload() {
-      const source = document.getElementById("default-results-json");
-      if (!source) {
-        throw new Error("埋め込み結果初期値JSONが見つかりません");
-      }
-      return JSON.parse(source.textContent);
+      return JSON.parse(getDefaultResultsJsonText());
     }
 
     function getEmbeddedDefaultPicksPayload() {
