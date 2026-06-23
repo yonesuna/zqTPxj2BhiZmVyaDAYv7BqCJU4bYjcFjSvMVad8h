@@ -3,9 +3,12 @@
     "MEX": "best32",
     "USA": "best32",
     "GER": "best32",
+    "ARG": "best32",
     "HAI": "eliminated",
     "TUR": "eliminated",
-    "TUN": "eliminated"
+    "TUN": "eliminated",
+    "FRA": "best32",
+    "NOR": "best32"
   },
   "teamConfirmed": {
     "HAI": true,
