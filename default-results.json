@@ -8,11 +8,13 @@
     "TUR": "eliminated",
     "TUN": "eliminated",
     "FRA": "best32",
-    "NOR": "best32"
+    "NOR": "best32",
+    "JOR": "eliminated"
   },
   "teamConfirmed": {
     "HAI": true,
     "TUR": true,
-    "TUN": true
+    "TUN": true,
+    "JOR": true
   }
 }
