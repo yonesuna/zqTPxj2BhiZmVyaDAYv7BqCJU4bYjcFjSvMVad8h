@@ -9,12 +9,14 @@
     "TUN": "eliminated",
     "FRA": "best32",
     "NOR": "best32",
-    "JOR": "eliminated"
+    "JOR": "eliminated",
+    "PAN": "eliminated"
   },
   "teamConfirmed": {
     "HAI": true,
     "TUR": true,
     "TUN": true,
-    "JOR": true
+    "JOR": true,
+    "PAN": true
   }
 }
