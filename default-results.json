@@ -4,19 +4,23 @@
     "USA": "best32",
     "GER": "best32",
     "ARG": "best32",
-    "HAI": "eliminated",
+    "HAI": "eliminatedf",
     "TUR": "eliminated",
     "TUN": "eliminated",
     "FRA": "best32",
     "NOR": "best32",
     "JOR": "eliminated",
-    "PAN": "eliminated"
+    "PAN": "eliminated",
+    "CAN": "best32",
+    "SUI": "best32",
+    "QAT": "eliminated"
   },
   "teamConfirmed": {
     "HAI": true,
     "TUR": true,
     "TUN": true,
     "JOR": true,
-    "PAN": true
+    "PAN": true,
+    "QAT": true
   }
 }
