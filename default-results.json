@@ -17,7 +17,10 @@
     "CAN": "best32",
     "QAT": "eliminated",
     "BRA": "best32",
-    "MAR": "best32"
+    "MAR": "best32",
+    "BIH": "best32",
+    "ECU": "best32",
+    "CIV": "best32"
   },
   "teamConfirmed": {
     "HAI": true,
