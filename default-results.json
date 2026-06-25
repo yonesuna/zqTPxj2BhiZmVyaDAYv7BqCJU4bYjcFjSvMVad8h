@@ -20,7 +20,8 @@
     "MAR": "best32",
     "BIH": "best32",
     "ECU": "best32",
-    "CIV": "best32"
+    "CIV": "best32",
+    "CUW": "eliminated"
   },
   "teamConfirmed": {
     "HAI": true,
@@ -29,6 +30,7 @@
     "JOR": true,
     "PAN": true,
     "CZE": true,
-    "QAT": true
+    "QAT": true,
+    "CUW": true
   }
 }
