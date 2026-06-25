@@ -11,9 +11,13 @@
     "NOR": "best32",
     "JOR": "eliminated",
     "PAN": "eliminated",
-    "CAN": "best32",
+    "CZE": "eliminated",
+    "RSA": "best32",
     "SUI": "best32",
-    "QAT": "eliminated"
+    "CAN": "best32",
+    "QAT": "eliminated",
+    "BRA": "best32",
+    "MAR": "best32"
   },
   "teamConfirmed": {
     "HAI": true,
@@ -21,6 +25,7 @@
     "TUN": true,
     "JOR": true,
     "PAN": true,
+    "CZE": true,
     "QAT": true
   }
 }
