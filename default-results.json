@@ -22,7 +22,7 @@
     "ECU": "best32",
     "CIV": "best32",
     "CUW": "eliminated",
-    "NED": "best16",
+    "NED": "best32",
     "JPN": "best32",
     "SWE": "best32"
   },
