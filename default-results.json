@@ -25,7 +25,8 @@
     "NED": "best32",
     "JPN": "best32",
     "SWE": "best32",
-    "AUS": "best32"
+    "AUS": "best32",
+    "IRQ": "eliminated"
   },
   "teamConfirmed": {
     "HAI": true,
@@ -35,6 +36,7 @@
     "PAN": true,
     "CZE": true,
     "QAT": true,
-    "CUW": true
+    "CUW": true,
+    "IRQ": true
   }
 }
