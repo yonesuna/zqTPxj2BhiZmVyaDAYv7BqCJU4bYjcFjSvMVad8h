@@ -24,7 +24,8 @@
     "CUW": "eliminated",
     "NED": "best32",
     "JPN": "best32",
-    "SWE": "best32"
+    "SWE": "best32",
+    "AUS": "best32"
   },
   "teamConfirmed": {
     "HAI": true,
