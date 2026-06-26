@@ -21,7 +21,10 @@
     "BIH": "best32",
     "ECU": "best32",
     "CIV": "best32",
-    "CUW": "eliminated"
+    "CUW": "eliminated",
+    "NED": "best16",
+    "JPN": "best32",
+    "SWE": "best32"
   },
   "teamConfirmed": {
     "HAI": true,
