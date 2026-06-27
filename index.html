@@ -1526,17 +1526,38 @@
       return /^グループ\s*[A-Za-z0-9]+$/.test(String(groupLabel || "").trim());
     }
 
-    function buildFifaKnockoutLink(groupLabel, teamId) {
+    function getKnockoutRoundSearchLabel(groupLabel) {
+      const normalized = String(groupLabel || "").trim();
+      if (normalized === "ラウンド32") return "32強ラウンド";
+      if (normalized === "ラウンド16") return "16強ラウンド";
+      return normalized;
+    }
+
+    function buildFifaKnockoutLink(groupLabel, homeTeamId, awayTeamId) {
       const normalizedGroupLabel = String(groupLabel || "").trim();
       if (!normalizedGroupLabel || isGroupLabel(normalizedGroupLabel)) return "";
 
-      const team = teamMap.get(teamId);
-      const teamName = team && team.name ? team.name : String(teamId || "").trim();
-      const searchTerms = [FIFA_KNOCKOUT_TITLE, normalizedGroupLabel];
+      const roundSearchLabel = getKnockoutRoundSearchLabel(normalizedGroupLabel);
+      const searchTerms = [FIFA_KNOCKOUT_TITLE, roundSearchLabel];
 
-      if (teamName && teamName !== "未定" && teamName !== "不明") {
-        searchTerms.push(teamName);
+      const homeTeamCode = String(homeTeamId || "").trim();
+      const awayTeamCode = String(awayTeamId || "").trim();
+
+      if (homeTeamCode && homeTeamCode !== "未定" && homeTeamCode !== "不明") {
+        searchTerms.push(homeTeamCode);
       }
+
+      if (awayTeamCode && awayTeamCode !== "未定" && awayTeamCode !== "不明") {
+        searchTerms.push(awayTeamCode);
+      }
+
+      const homeTeam = teamMap.get(homeTeamCode);
+      const awayTeam = teamMap.get(awayTeamCode);
+      const homeTeamName = homeTeam && homeTeam.name ? homeTeam.name : "";
+      const awayTeamName = awayTeam && awayTeam.name ? awayTeam.name : "";
+
+      if (homeTeamName) searchTerms.push(homeTeamName);
+      if (awayTeamName) searchTerms.push(awayTeamName);
 
       const textDirectives = searchTerms
         .map((term) => "text=" + encodeURIComponent(term))
@@ -1545,33 +1566,11 @@
       return FIFA_STANDINGS_URL + "#:~:" + textDirectives;
     }
 
-    function buildMatchTeamCellHtmlWithReference(teamId, groupLabel) {
-      const team = teamMap.get(teamId);
-      const teamName = team && team.name ? team.name : (String(teamId || "").trim() || "不明");
-      const teamCoreLabel = buildTeamNameWithFavoriteIconHtml(teamName, team && team.id ? team.id : teamId);
-      const fifaKnockoutLink = buildFifaKnockoutLink(groupLabel, teamId);
-
-      const teamLabel = fifaKnockoutLink
-        ? "<a href='" + escapeHtml(fifaKnockoutLink) + "' class='team-link' target='_blank' rel='noopener noreferrer'>" + teamCoreLabel + "</a>"
-        : (team && team.id
-          ? "<a href='#' class='team-link' onclick='openResultTeam(\"" + team.id + "\"); return false;'>" + teamCoreLabel + "</a>"
-          : teamCoreLabel);
-
-      const ownersLabel = buildMatchOwnerLinksHtml(teamId);
-
-      return "<span class='match-team-cell'>"
-        + teamLabel
-        + "<span class='match-team-owner'>"
-        + "(" + ownersLabel + ")"
-        + "</span>"
-        + "</span>";
-    }
-
-    function buildMatchDatetimeCellHtml(group, kickoff) {
+    function buildMatchDatetimeCellHtml(group, kickoff, homeTeamId, awayTeamId) {
       const groupLabel = String(group || "").trim() || "-";
       const matchedGroup = groupLabel.match(/^グループ\s*([A-Za-z0-9]+)$/);
       const groupCardId = matchedGroup ? getResultsGroupCardId(groupLabel) : "";
-      const groupLink = buildFifaKnockoutLink(groupLabel, "");
+      const groupLink = buildFifaKnockoutLink(groupLabel, homeTeamId, awayTeamId);
       const groupHtml = !matchedGroup
         ? (groupLink
           ? "<a href='" + escapeHtml(groupLink) + "' class='match-group-link' target='_blank' rel='noopener noreferrer'>" + escapeHtml(groupLabel) + "</a>"
@@ -2038,10 +2037,10 @@
           const scoreColClass = "match-score-col" + (isDraw ? " match-score-draw" : "");
 
           return "<tr class='match-row'" + kickoffTsAttr + ">"
-            + "<td>" + buildMatchDatetimeCellHtml(group, kickoff) + "</td>"
-            + "<td" + homeResultClass + ">" + buildMatchTeamCellHtmlWithReference(homeId, group) + "</td>"
+            + "<td>" + buildMatchDatetimeCellHtml(group, kickoff, homeId, awayId) + "</td>"
+            + "<td" + homeResultClass + ">" + buildMatchTeamCellHtml(homeId) + "</td>"
             + "<td class='" + scoreColClass + "'>" + escapeHtml(score) + "</td>"
-            + "<td" + awayResultClass + ">" + buildMatchTeamCellHtmlWithReference(awayId, group) + "</td>"
+            + "<td" + awayResultClass + ">" + buildMatchTeamCellHtml(awayId) + "</td>"
             + "<td class='match-stadium-col'>" + escapeHtml(stadium) + "</td>"
             + "</tr>";
         })
