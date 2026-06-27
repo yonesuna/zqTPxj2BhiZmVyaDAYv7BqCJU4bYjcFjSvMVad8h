@@ -31,7 +31,15 @@
     "KSA": "eliminated",
     "IRQ": "eliminated",
     "URU": "eliminated",
-    "PAR": "best32"
+    "PAR": "best32",
+    "BEL": "best32",
+    "EGY": "best32",
+    "NZL": "eliminated",
+    "SCO": "eliminated",
+    "SEN": "best32",
+    "ENG": "best32",
+    "GHA": "best32",
+    "COL": "best32"
   },
   "teamConfirmed": {
     "HAI": true,
@@ -44,6 +52,8 @@
     "CUW": true,
     "IRQ": true,
     "KSA": true,
-    "URU": true
+    "URU": true,
+    "NZL": true,
+    "SCO": true
   }
 }
