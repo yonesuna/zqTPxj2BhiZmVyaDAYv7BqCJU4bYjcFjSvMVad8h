@@ -26,8 +26,10 @@
     "JPN": "best32",
     "SWE": "best32",
     "AUS": "best32",
-    "IRQ": "eliminated",
-    "COL": "best32"
+    "CPV": "best32",
+    "ESP": "best32",
+    "KSA": "eliminated",
+    "IRQ": "eliminated"
   },
   "teamConfirmed": {
     "HAI": true,
@@ -38,6 +40,7 @@
     "CZE": true,
     "QAT": true,
     "CUW": true,
-    "IRQ": true
+    "IRQ": true,
+    "KSA": true
   }
 }
