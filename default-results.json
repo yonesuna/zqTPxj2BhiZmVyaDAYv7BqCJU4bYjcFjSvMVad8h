@@ -30,7 +30,8 @@
     "ESP": "best32",
     "KSA": "eliminated",
     "IRQ": "eliminated",
-    "URU": "eliminated"
+    "URU": "eliminated",
+    "PAR": "best32"
   },
   "teamConfirmed": {
     "HAI": true,
