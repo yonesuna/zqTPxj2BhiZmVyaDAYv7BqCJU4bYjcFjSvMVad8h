@@ -40,7 +40,8 @@
     "ENG": "best32",
     "GHA": "best32",
     "COL": "best32",
-    "POR": "best32"
+    "POR": "best32",
+    "CRO": "best32"
   },
   "teamConfirmed": {
     "HAI": true,
