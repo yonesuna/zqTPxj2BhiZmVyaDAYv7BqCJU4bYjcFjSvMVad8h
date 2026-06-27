@@ -1109,6 +1109,8 @@
 
     const GROUP_REFERENCE_BASE_URL = "https://soccer.yahoo.co.jp/wcup/category/2026/cups/159/31457";
     const GROUP_REFERENCE_TARGET_NAME = "wc2026-group-reference";
+    const FIFA_STANDINGS_URL = "https://www.fifa.com/ja/tournaments/mens/worldcup/canadamexicousa2026/standings";
+    const FIFA_KNOCKOUT_TITLE = "ノックアウトトーナメント表";
     const DEFAULT_RESULTS_JSON_FILE_PATH = "default-results.json";
     const MATCH_CSV_FILE_PATH = "embedded-match.csv";
     const GOAL_LIST_CSV_FILE_PATH = "goal_list.csv";
@@ -1520,12 +1522,60 @@
         + "</span>";
     }
 
+    function isGroupLabel(groupLabel) {
+      return /^グループ\s*[A-Za-z0-9]+$/.test(String(groupLabel || "").trim());
+    }
+
+    function buildFifaKnockoutLink(groupLabel, teamId) {
+      const normalizedGroupLabel = String(groupLabel || "").trim();
+      if (!normalizedGroupLabel || isGroupLabel(normalizedGroupLabel)) return "";
+
+      const team = teamMap.get(teamId);
+      const teamName = team && team.name ? team.name : String(teamId || "").trim();
+      const searchTerms = [FIFA_KNOCKOUT_TITLE, normalizedGroupLabel];
+
+      if (teamName && teamName !== "未定" && teamName !== "不明") {
+        searchTerms.push(teamName);
+      }
+
+      const textDirectives = searchTerms
+        .map((term) => "text=" + encodeURIComponent(term))
+        .join("&");
+
+      return FIFA_STANDINGS_URL + "#:~:" + textDirectives;
+    }
+
+    function buildMatchTeamCellHtmlWithReference(teamId, groupLabel) {
+      const team = teamMap.get(teamId);
+      const teamName = team && team.name ? team.name : (String(teamId || "").trim() || "不明");
+      const teamCoreLabel = buildTeamNameWithFavoriteIconHtml(teamName, team && team.id ? team.id : teamId);
+      const fifaKnockoutLink = buildFifaKnockoutLink(groupLabel, teamId);
+
+      const teamLabel = fifaKnockoutLink
+        ? "<a href='" + escapeHtml(fifaKnockoutLink) + "' class='team-link' target='_blank' rel='noopener noreferrer'>" + teamCoreLabel + "</a>"
+        : (team && team.id
+          ? "<a href='#' class='team-link' onclick='openResultTeam(\"" + team.id + "\"); return false;'>" + teamCoreLabel + "</a>"
+          : teamCoreLabel);
+
+      const ownersLabel = buildMatchOwnerLinksHtml(teamId);
+
+      return "<span class='match-team-cell'>"
+        + teamLabel
+        + "<span class='match-team-owner'>"
+        + "(" + ownersLabel + ")"
+        + "</span>"
+        + "</span>";
+    }
+
     function buildMatchDatetimeCellHtml(group, kickoff) {
       const groupLabel = String(group || "").trim() || "-";
       const matchedGroup = groupLabel.match(/^グループ\s*([A-Za-z0-9]+)$/);
       const groupCardId = matchedGroup ? getResultsGroupCardId(groupLabel) : "";
+      const groupLink = buildFifaKnockoutLink(groupLabel, "");
       const groupHtml = !matchedGroup
-        ? escapeHtml(groupLabel)
+        ? (groupLink
+          ? "<a href='" + escapeHtml(groupLink) + "' class='match-group-link' target='_blank' rel='noopener noreferrer'>" + escapeHtml(groupLabel) + "</a>"
+          : escapeHtml(groupLabel))
         : "<a href='#' class='match-group-link' onclick='openResultGroup(\"" + groupCardId + "\"); return false;'>" + escapeHtml(groupLabel) + "</a>";
 
       return "<span class='match-datetime-cell'>"
@@ -1989,9 +2039,9 @@
 
           return "<tr class='match-row'" + kickoffTsAttr + ">"
             + "<td>" + buildMatchDatetimeCellHtml(group, kickoff) + "</td>"
-            + "<td" + homeResultClass + ">" + buildMatchTeamCellHtml(homeId) + "</td>"
+            + "<td" + homeResultClass + ">" + buildMatchTeamCellHtmlWithReference(homeId, group) + "</td>"
             + "<td class='" + scoreColClass + "'>" + escapeHtml(score) + "</td>"
-            + "<td" + awayResultClass + ">" + buildMatchTeamCellHtml(awayId) + "</td>"
+            + "<td" + awayResultClass + ">" + buildMatchTeamCellHtmlWithReference(awayId, group) + "</td>"
             + "<td class='match-stadium-col'>" + escapeHtml(stadium) + "</td>"
             + "</tr>";
         })
