@@ -1504,7 +1504,7 @@
 
     function buildMatchTeamCellHtml(teamId) {
       const team = teamMap.get(teamId);
-      const teamName = team && team.name ? team.name : "不明";
+      const teamName = team && team.name ? team.name : (String(teamId || "").trim() || "不明");
       const teamLabel = team && team.id
         ? "<a href='#' class='team-link' onclick='openResultTeam(\"" + team.id + "\"); return false;'>"
           + buildTeamNameWithFavoriteIconHtml(teamName, team.id)
@@ -1522,8 +1522,9 @@
 
     function buildMatchDatetimeCellHtml(group, kickoff) {
       const groupLabel = String(group || "").trim() || "-";
-      const groupCardId = getResultsGroupCardId(groupLabel);
-      const groupHtml = groupLabel === "-"
+      const matchedGroup = groupLabel.match(/^グループ\s*([A-Za-z0-9]+)$/);
+      const groupCardId = matchedGroup ? getResultsGroupCardId(groupLabel) : "";
+      const groupHtml = !matchedGroup
         ? escapeHtml(groupLabel)
         : "<a href='#' class='match-group-link' onclick='openResultGroup(\"" + groupCardId + "\"); return false;'>" + escapeHtml(groupLabel) + "</a>";
 
