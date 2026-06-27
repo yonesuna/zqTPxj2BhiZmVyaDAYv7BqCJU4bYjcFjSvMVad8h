@@ -39,7 +39,8 @@
     "SEN": "best32",
     "ENG": "best32",
     "GHA": "best32",
-    "COL": "best32"
+    "COL": "best32",
+    "POR": "best32"
   },
   "teamConfirmed": {
     "HAI": true,
