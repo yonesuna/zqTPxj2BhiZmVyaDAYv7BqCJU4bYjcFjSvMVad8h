@@ -14,7 +14,7 @@
     "CZE": "eliminated",
     "RSA": "best32",
     "SUI": "best32",
-    "CAN": "best32",
+    "CAN": "best16",
     "QAT": "eliminated",
     "BRA": "best32",
     "MAR": "best32",
@@ -65,6 +65,7 @@
     "SCO": true,
     "UZB": true,
     "KOR": true,
-    "IRN": true
+    "IRN": true,
+    "RSA": true
   }
 }
