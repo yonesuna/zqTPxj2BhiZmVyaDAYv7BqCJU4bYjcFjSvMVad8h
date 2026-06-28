@@ -41,7 +41,10 @@
     "GHA": "best32",
     "COL": "best32",
     "POR": "best32",
-    "CRO": "best32"
+    "CRO": "best32",
+    "CGO": "best32",
+    "UZB": "eliminated",
+    "KOR": "eliminated"
   },
   "teamConfirmed": {
     "HAI": true,
@@ -56,6 +59,8 @@
     "KSA": true,
     "URU": true,
     "NZL": true,
-    "SCO": true
+    "SCO": true,
+    "UZB": true,
+    "KOR": true
   }
 }
