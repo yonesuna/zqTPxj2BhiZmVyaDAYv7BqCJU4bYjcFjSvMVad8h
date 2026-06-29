@@ -97,7 +97,7 @@
       border: 1px solid #c9d8f6;
       border-radius: 999px;
       padding: 6px 6px;
-      font-size: 0.84rem;
+      font-size: 0.8rem;
       font-weight: 600;
       background: #fff;
       cursor: pointer;
@@ -465,6 +465,169 @@
       vertical-align: baseline;
     }
 
+    .knockout-summary {
+      margin-bottom: 12px;
+    }
+
+    .knockout-scroll {
+      position: relative;
+      overflow: auto;
+      border: 1px solid #e4eaf8;
+      border-radius: 10px;
+      padding: 10px;
+      background: #fbfdff;
+    }
+
+    .knockout-board {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(220px, 1fr));
+      gap: 12px;
+      padding-bottom: 4px;
+      align-items: start;
+      position: relative;
+      width: max-content;
+      min-width: 100%;
+      z-index: 1;
+    }
+
+    .knockout-lines {
+      position: absolute;
+      left: 0;
+      top: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: visible;
+    }
+
+    .knockout-line {
+      fill: none;
+      stroke: #93a7ce;
+      stroke-width: 1.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      opacity: 0.95;
+    }
+
+    .knockout-line.loser {
+      stroke: #d67d66;
+      stroke-dasharray: 4 3;
+    }
+
+    .knockout-round {
+      min-width: 220px;
+    }
+
+    .knockout-round-title {
+      margin: 0 0 10px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #0f3e7d, #1d63b0);
+      color: #fff;
+      font-size: 0.95rem;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+    }
+
+    .knockout-round-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .knockout-match {
+      border: 1px solid #d9e1f2;
+      border-radius: 12px;
+      background: linear-gradient(180deg, #ffffff, #f7faff);
+      box-shadow: 0 4px 14px rgba(20, 46, 94, 0.06);
+      overflow: hidden;
+    }
+
+    .knockout-match-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 8px 10px;
+      border-bottom: 1px solid #e8eef9;
+      background: #edf3ff;
+      color: #123d7a;
+      font-size: 0.76rem;
+      font-weight: 700;
+    }
+
+    .knockout-match-score {
+      font-variant-numeric: tabular-nums;
+      color: #173a73;
+    }
+
+    .knockout-match-kind {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: #355f9e;
+      white-space: nowrap;
+    }
+
+    .knockout-team {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 9px 10px;
+      border-top: 1px solid #f1f5fd;
+    }
+
+    .knockout-team[data-slot="home"] {
+      border-top: 0;
+    }
+
+    .knockout-team:first-of-type {
+      border-top: 0;
+    }
+
+    .knockout-team.is-winner {
+      background: #ecfdf3;
+    }
+
+    .knockout-team.is-winner .knockout-team-id {
+      color: #027a48;
+      font-weight: 800;
+    }
+
+    .knockout-team.is-loser {
+      background: #fff8f6;
+      opacity: 0.8;
+    }
+
+    .knockout-team-main {
+      min-width: 0;
+      display: grid;
+      gap: 2px;
+      flex: 1;
+    }
+
+    .knockout-team-name {
+      font-size: 0.84rem;
+      font-weight: 700;
+      color: #173a73;
+      min-width: 0;
+      word-break: break-word;
+    }
+
+    .knockout-team-id {
+      display: none;
+    }
+
+    .knockout-team-state {
+      font-size: 0.88rem;
+      font-weight: 800;
+      color: #173a73;
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+
+    .knockout-team.is-winner .knockout-team-state {
+      color: #027a48;
+    }
+
     @media (max-width: 600px) and (orientation: portrait) {
       .match-stadium-col {
         display: none;
@@ -651,6 +814,16 @@
       select {
         min-width: 110px;
       }
+
+      .knockout-board {
+        grid-template-columns: repeat(5, minmax(210px, 1fr));
+      }
+    }
+
+    @media (max-width: 600px) and (orientation: portrait) {
+      .top-nav button[data-tab-btn="picks"] {
+        display: none;
+      }
     }
   </style>
 </head>
@@ -667,6 +840,7 @@
     <button type="button" data-tab-btn="team-points" onclick="showTab('team-points')">ポイント表</button>
     <button type="button" data-tab-btn="results" onclick="showTab('results')">結果</button>
     <button type="button" data-tab-btn="match-csv" onclick="showTab('match-csv')">試合</button>
+    <button type="button" data-tab-btn="knockout" onclick="showTab('knockout')">トーナメント</button>
     <button type="button" data-tab-btn="picks" onclick="showTab('picks')">選択チーム</button>
   </nav>
 
@@ -771,6 +945,15 @@
       </div>
       <div id="results-json-status" class="status"></div>
       <ul id="results-json-issues" class="issues"></ul>
+    </section>
+
+    <section id="knockout" class="card tab-section" data-tab="knockout">
+      <h2>トーナメント表</h2>
+      <div id="knockout-status" class="status"></div>
+      <div id="knockout-scroll" class="knockout-scroll">
+        <svg id="knockout-lines" class="knockout-lines" aria-hidden="true"></svg>
+        <div id="knockout-board" class="knockout-board"></div>
+      </div>
     </section>
 
     <section id="team-points" class="card tab-section" data-tab="team-points">
@@ -1110,12 +1293,16 @@
     const GROUP_REFERENCE_BASE_URL = "https://soccer.yahoo.co.jp/wcup/category/2026/cups/159/31457";
     const GROUP_REFERENCE_TARGET_NAME = "wc2026-group-reference";
     const DEFAULT_RESULTS_JSON_FILE_PATH = "default-results.json";
+    const DEFAULT_KNOCKOUT_JSON_FILE_PATH = "default-knockout.json";
     const MATCH_CSV_FILE_PATH = "embedded-match.csv";
     const GOAL_LIST_CSV_FILE_PATH = "goal_list.csv";
     let embeddedCompletedMatches = null;
+    let embeddedKnockoutFixtures = null;
+    let embeddedKnockoutKickoffByNo = new Map();
     let embeddedMatchParseError = "";
     let goalScorerRows = null;
     let goalScorerParseError = "";
+    let defaultKnockout = { teams: [] };
 
     const STAGE_ORDER = {
       eliminated: 0,
@@ -1425,6 +1612,25 @@
       return jsonText;
     }
 
+    function getDefaultKnockoutJsonText() {
+      const request = new XMLHttpRequest();
+      request.open("GET", DEFAULT_KNOCKOUT_JSON_FILE_PATH, false);
+      request.send(null);
+
+      const status = Number(request.status);
+      const statusOk = (status >= 200 && status < 300) || status === 0;
+      if (!statusOk) {
+        throw new Error("default-knockout.json の読み込みに失敗しました (HTTP " + status + ")");
+      }
+
+      const jsonText = String(request.responseText || "").trim();
+      if (!jsonText) {
+        throw new Error("default-knockout.json が空です");
+      }
+
+      return jsonText;
+    }
+
     function buildDefaultPickOwnersMap(payload) {
       const ownersByTeam = new Map();
       const participants = payload && Array.isArray(payload.participants) ? payload.participants : [];
@@ -1520,13 +1726,18 @@
         + "</span>";
     }
 
-    function buildMatchDatetimeCellHtml(group, kickoff) {
+    function buildMatchDatetimeCellHtml(group, kickoff, tournamentNo) {
       const groupLabel = String(group || "").trim() || "-";
       const matchedGroup = groupLabel.match(/^グループ\s*([A-Za-z0-9]+)$/);
       const groupCardId = matchedGroup ? getResultsGroupCardId(groupLabel) : "";
-      const groupHtml = !matchedGroup
-        ? escapeHtml(groupLabel)
-        : "<a href='#' class='match-group-link' onclick='openResultGroup(\"" + groupCardId + "\"); return false;'>" + escapeHtml(groupLabel) + "</a>";
+      const isKnockoutStageLabel = /^(ラウンド32|ラウンド16|準々決勝|準決勝|決勝|3位決定戦)$/.test(groupLabel);
+      const groupHtml = matchedGroup
+        ? "<a href='#' class='match-group-link' onclick='openResultGroup(\"" + groupCardId + "\"); return false;'>" + escapeHtml(groupLabel) + "</a>"
+        : (isKnockoutStageLabel
+          ? (Number.isInteger(tournamentNo)
+            ? "<a href='#' class='match-group-link' onclick='openKnockoutMatchByTournamentNo(" + String(tournamentNo) + ", \"" + escapeHtml(groupLabel) + "\"); return false;'>" + escapeHtml(groupLabel) + "</a>"
+            : "<a href='#' class='match-group-link' onclick='openKnockoutStage(\"" + escapeHtml(groupLabel) + "\"); return false;'>" + escapeHtml(groupLabel) + "</a>")
+          : escapeHtml(groupLabel));
 
       return "<span class='match-datetime-cell'>"
         + "<span class='match-group-label'>" + groupHtml + "</span>"
@@ -1538,12 +1749,38 @@
       const normalized = String(scoreText || "").trim();
       if (!normalized) return null;
 
-      const matched = normalized.match(/^(\d+)\s*[-:：－]\s*(\d+)$/);
+      const matched = normalized.match(/^(\d+)\s*[-:：－]\s*(\d+)(?:\s*[\(（]\s*(\d+)\s*[-:：－]\s*(\d+)\s*[\)）])?$/);
       if (!matched) return null;
 
+      const home = Number(matched[1]);
+      const away = Number(matched[2]);
+      const hasPk = typeof matched[3] !== "undefined" && typeof matched[4] !== "undefined";
+      const homePk = hasPk ? Number(matched[3]) : null;
+      const awayPk = hasPk ? Number(matched[4]) : null;
+
+      let winnerSide = null;
+      if (home > away) {
+        winnerSide = "home";
+      } else if (home < away) {
+        winnerSide = "away";
+      } else if (hasPk && homePk !== null && awayPk !== null) {
+        if (homePk > awayPk) {
+          winnerSide = "home";
+        } else if (homePk < awayPk) {
+          winnerSide = "away";
+        }
+      }
+
       return {
-        home: Number(matched[1]),
-        away: Number(matched[2])
+        home,
+        away,
+        homePk,
+        awayPk,
+        hasPk,
+        winnerSide,
+        isDraw: winnerSide === null,
+        homeDisplay: hasPk ? String(home) + "(" + String(homePk) + ")" : String(home),
+        awayDisplay: hasPk ? String(away) + "(" + String(awayPk) + ")" : String(away)
       };
     }
 
@@ -1677,6 +1914,7 @@
         const homeId = String(typeof row[headerIndex["ホーム"]] === "undefined" ? "" : row[headerIndex["ホーム"]]).trim();
         const awayId = String(typeof row[headerIndex["アウェイ"]] === "undefined" ? "" : row[headerIndex["アウェイ"]]).trim();
         const scoreText = String(typeof row[headerIndex["スコア"]] === "undefined" ? "" : row[headerIndex["スコア"]]).trim();
+        const kickoff = String(typeof row[headerIndex["試合日時"]] === "undefined" ? "" : row[headerIndex["試合日時"]]).trim();
         const score = parseMatchScoreValues(scoreText);
 
         if (!homeId || !awayId || !score) return;
@@ -1685,7 +1923,13 @@
           homeId,
           awayId,
           homeScore: score.home,
-          awayScore: score.away
+          awayScore: score.away,
+          homePkScore: score.homePk,
+          awayPkScore: score.awayPk,
+          winnerSide: score.winnerSide,
+          homeDisplayScore: score.homeDisplay,
+          awayDisplayScore: score.awayDisplay,
+          kickoff
         });
       });
 
@@ -1694,6 +1938,115 @@
         message: "",
         matches
       };
+    }
+
+    function extractKnockoutFixturesFromCsvRows(rows) {
+      if (!Array.isArray(rows) || rows.length === 0) {
+        return [];
+      }
+
+      const headers = Array.isArray(rows[0]) ? rows[0].map((value) => String(value)) : [];
+      const headerIndex = {};
+      headers.forEach((header, index) => {
+        headerIndex[header] = index;
+      });
+
+      const hasHome = Object.prototype.hasOwnProperty.call(headerIndex, "ホーム");
+      const hasAway = Object.prototype.hasOwnProperty.call(headerIndex, "アウェイ");
+      const hasKickoff = Object.prototype.hasOwnProperty.call(headerIndex, "試合日時");
+      const hasTournamentNo = Object.prototype.hasOwnProperty.call(headerIndex, "トーナメントNo");
+      if (!hasHome || !hasAway || !hasKickoff) {
+        return [];
+      }
+
+      const hasGroup = Object.prototype.hasOwnProperty.call(headerIndex, "グループ");
+      const fixtures = [];
+      let knockoutRowSerial = 1;
+      rows.slice(1).forEach((row) => {
+        if (!Array.isArray(row)) return;
+
+        const homeId = String(typeof row[headerIndex["ホーム"]] === "undefined" ? "" : row[headerIndex["ホーム"]]).trim();
+        const awayId = String(typeof row[headerIndex["アウェイ"]] === "undefined" ? "" : row[headerIndex["アウェイ"]]).trim();
+        const kickoff = String(typeof row[headerIndex["試合日時"]] === "undefined" ? "" : row[headerIndex["試合日時"]]).trim();
+        const stageLabel = hasGroup
+          ? String(typeof row[headerIndex["グループ"]] === "undefined" ? "" : row[headerIndex["グループ"]]).trim()
+          : "";
+        const isKnockoutStage = !hasGroup || /(ラウンド|準々決勝|準決勝|決勝|3位決定戦)/.test(stageLabel);
+        if (!isKnockoutStage) return;
+
+        const tournamentNoRaw = hasTournamentNo
+          ? row[headerIndex["トーナメントNo"]]
+          : row[headers.length];
+        const tournamentNoText = String(typeof tournamentNoRaw === "undefined" ? "" : tournamentNoRaw).trim();
+        const parsedTournamentNo = /^\d+$/.test(tournamentNoText) ? Number(tournamentNoText) : null;
+        const tournamentNo = Number.isInteger(parsedTournamentNo) ? parsedTournamentNo : knockoutRowSerial;
+        knockoutRowSerial += 1;
+
+        if (!homeId || !awayId || !kickoff) return;
+        if (!Number.isInteger(tournamentNo) || tournamentNo < 1 || tournamentNo > 32) return;
+
+        fixtures.push({
+          homeId,
+          awayId,
+          kickoff,
+          tournamentNo
+        });
+      });
+
+      return fixtures;
+    }
+
+    function buildKnockoutKickoffMapFromCsvRows(rows) {
+      const kickoffMap = new Map();
+      if (!Array.isArray(rows) || rows.length === 0) {
+        return kickoffMap;
+      }
+
+      const headers = Array.isArray(rows[0]) ? rows[0].map((value) => String(value)) : [];
+      const headerIndex = {};
+      headers.forEach((header, index) => {
+        headerIndex[header] = index;
+      });
+
+      const hasHome = Object.prototype.hasOwnProperty.call(headerIndex, "ホーム");
+      const hasAway = Object.prototype.hasOwnProperty.call(headerIndex, "アウェイ");
+      const hasKickoff = Object.prototype.hasOwnProperty.call(headerIndex, "試合日時");
+      if (!hasHome || !hasAway || !hasKickoff) {
+        return kickoffMap;
+      }
+
+      const hasGroup = Object.prototype.hasOwnProperty.call(headerIndex, "グループ");
+      const hasTournamentNo = Object.prototype.hasOwnProperty.call(headerIndex, "トーナメントNo");
+      let knockoutRowSerial = 1;
+
+      rows.slice(1).forEach((row) => {
+        if (!Array.isArray(row)) return;
+
+        const stageLabel = hasGroup
+          ? String(typeof row[headerIndex["グループ"]] === "undefined" ? "" : row[headerIndex["グループ"]]).trim()
+          : "";
+        const isKnockoutStage = !hasGroup || /(ラウンド|準々決勝|準決勝|決勝|3位決定戦)/.test(stageLabel);
+        if (!isKnockoutStage) return;
+
+        const kickoff = String(typeof row[headerIndex["試合日時"]] === "undefined" ? "" : row[headerIndex["試合日時"]]).trim();
+        if (!kickoff) {
+          knockoutRowSerial += 1;
+          return;
+        }
+
+        const tournamentNoRaw = hasTournamentNo
+          ? row[headerIndex["トーナメントNo"]]
+          : row[headers.length];
+        const tournamentNoText = String(typeof tournamentNoRaw === "undefined" ? "" : tournamentNoRaw).trim();
+        const parsedTournamentNo = /^\d+$/.test(tournamentNoText) ? Number(tournamentNoText) : null;
+        const tournamentNo = Number.isInteger(parsedTournamentNo) ? parsedTournamentNo : knockoutRowSerial;
+        knockoutRowSerial += 1;
+
+        if (!Number.isInteger(tournamentNo) || tournamentNo < 1 || tournamentNo > 32) return;
+        kickoffMap.set(tournamentNo, kickoff);
+      });
+
+      return kickoffMap;
     }
 
     function extractGoalScorerRowsFromCsvRows(rows) {
@@ -1813,10 +2166,13 @@
       };
 
       (Array.isArray(embeddedCompletedMatches) ? embeddedCompletedMatches : []).forEach((match) => {
-        if (match.homeScore > match.awayScore) {
+        const winnerSide = match.winnerSide
+          || (match.homeScore > match.awayScore ? "home" : (match.homeScore < match.awayScore ? "away" : null));
+
+        if (winnerSide === "home") {
           applyMatchResult(match.homeId, "win");
           applyMatchResult(match.awayId, "loss");
-        } else if (match.homeScore < match.awayScore) {
+        } else if (winnerSide === "away") {
           applyMatchResult(match.homeId, "loss");
           applyMatchResult(match.awayId, "win");
         } else {
@@ -1946,6 +2302,7 @@
       headers.forEach((header, index) => {
         headerIndex[header] = index;
       });
+      const hasTournamentNo = Object.prototype.hasOwnProperty.call(headerIndex, "トーナメントNo");
 
       const missingHeaders = requiredHeaders.filter((header) => !Object.prototype.hasOwnProperty.call(headerIndex, header));
       if (headers.length === 0 || missingHeaders.length > 0) {
@@ -1975,20 +2332,25 @@
           const homeId = String(typeof row[headerIndex["ホーム"]] === "undefined" ? "" : row[headerIndex["ホーム"]]).trim();
           const score = String(typeof row[headerIndex["スコア"]] === "undefined" ? "" : row[headerIndex["スコア"]]).trim();
           const awayId = String(typeof row[headerIndex["アウェイ"]] === "undefined" ? "" : row[headerIndex["アウェイ"]]).trim();
+          const tournamentNoRaw = hasTournamentNo
+            ? row[headerIndex["トーナメントNo"]]
+            : row[headers.length];
+          const tournamentNoText = String(typeof tournamentNoRaw === "undefined" ? "" : tournamentNoRaw).trim();
+          const tournamentNo = /^\d+$/.test(tournamentNoText) ? Number(tournamentNoText) : null;
           const kickoffDate = parseMatchKickoffDate(kickoff);
           const kickoffTsAttr = kickoffDate ? " data-kickoff-ts='" + String(kickoffDate.getTime()) + "'" : "";
           const scoreValues = parseMatchScoreValues(score);
-          const isDraw = scoreValues && scoreValues.home === scoreValues.away;
+          const isDraw = scoreValues ? scoreValues.isDraw : false;
           const homeResultClass = scoreValues
-            ? (scoreValues.home > scoreValues.away ? " class='match-team-winner'" : (isDraw ? " class='match-team-draw'" : ""))
+            ? (scoreValues.winnerSide === "home" ? " class='match-team-winner'" : (isDraw ? " class='match-team-draw'" : ""))
             : "";
           const awayResultClass = scoreValues
-            ? (scoreValues.away > scoreValues.home ? " class='match-team-winner'" : (isDraw ? " class='match-team-draw'" : ""))
+            ? (scoreValues.winnerSide === "away" ? " class='match-team-winner'" : (isDraw ? " class='match-team-draw'" : ""))
             : "";
           const scoreColClass = "match-score-col" + (isDraw ? " match-score-draw" : "");
 
           return "<tr class='match-row'" + kickoffTsAttr + ">"
-            + "<td>" + buildMatchDatetimeCellHtml(group, kickoff) + "</td>"
+            + "<td>" + buildMatchDatetimeCellHtml(group, kickoff, Number.isInteger(tournamentNo) ? tournamentNo : null) + "</td>"
             + "<td" + homeResultClass + ">" + buildMatchTeamCellHtml(homeId) + "</td>"
             + "<td class='" + scoreColClass + "'>" + escapeHtml(score) + "</td>"
             + "<td" + awayResultClass + ">" + buildMatchTeamCellHtml(awayId) + "</td>"
@@ -2070,6 +2432,8 @@
     function loadMatchCsvData() {
       setMatchCsvStatus("CSVファイルを読み込み中...", "");
       embeddedCompletedMatches = null;
+      embeddedKnockoutFixtures = null;
+      embeddedKnockoutKickoffByNo = new Map();
       embeddedMatchParseError = "";
       renderParticipantMatchRecords();
 
@@ -2077,6 +2441,8 @@
         const csvText = getEmbeddedMatchCsvText();
         const parsedRows = parseCsvText(csvText);
         const extractedMatches = extractCompletedMatchesFromCsvRows(parsedRows);
+        embeddedKnockoutFixtures = extractKnockoutFixturesFromCsvRows(parsedRows);
+        embeddedKnockoutKickoffByNo = buildKnockoutKickoffMapFromCsvRows(parsedRows);
 
         if (extractedMatches.ok) {
           embeddedCompletedMatches = extractedMatches.matches;
@@ -2088,12 +2454,16 @@
 
         renderMatchCsvTable(parsedRows);
         renderParticipantMatchRecords();
+        renderKnockoutBracket();
       } catch (error) {
         const message = error && error.message ? error.message : "読み込みエラー";
         embeddedCompletedMatches = [];
+        embeddedKnockoutFixtures = [];
+        embeddedKnockoutKickoffByNo = new Map();
         embeddedMatchParseError = "CSVファイルの読み込みに失敗しました（" + message + "）。";
         setMatchCsvStatus("CSVファイルの読み込みに失敗しました（" + message + "）。", "error");
         renderParticipantMatchRecords();
+        renderKnockoutBracket();
       }
     }
 
@@ -2362,6 +2732,15 @@
           focusNextMatchRow();
         });
       }
+
+      if (tabName === "knockout") {
+        positionKnockoutBracket();
+        drawKnockoutConnections();
+        window.requestAnimationFrame(function() {
+          positionKnockoutBracket();
+          drawKnockoutConnections();
+        });
+      }
     }
 
     function getEmbeddedDefaultTeamsPayload() {
@@ -2382,6 +2761,10 @@
         throw new Error("埋め込み選択チーム初期値JSONが見つかりません");
       }
       return JSON.parse(source.textContent);
+    }
+
+    function getEmbeddedDefaultKnockoutPayload() {
+      return JSON.parse(getDefaultKnockoutJsonText());
     }
 
     function validateTeamsPayload(payload) {
@@ -2587,6 +2970,86 @@
       return issues;
     }
 
+    function normalizeKnockoutTeamId(value) {
+      const id = typeof value === "string" ? value.trim() : "";
+      if (!id || id === "未定" || id === "TBD") return "";
+      return id;
+    }
+
+    function validateKnockoutPayload(payload) {
+      const issues = [];
+      if (!payload || typeof payload !== "object") {
+        issues.push("JSONルートはオブジェクトである必要があります。");
+        return issues;
+      }
+
+      if (!Array.isArray(payload.teams)) {
+        issues.push("teams 配列が必要です。");
+        return issues;
+      }
+
+      if (payload.teams.length !== 32) {
+        issues.push("teams は 32 件必要です。現在: " + String(payload.teams.length) + " 件。");
+      }
+
+      const seenIds = new Set();
+      payload.teams.forEach((entry, index) => {
+        if (!entry || typeof entry !== "object") {
+          issues.push((index + 1) + "件目の teams 要素が不正です。");
+          return;
+        }
+
+        const rawId = entry.id;
+        const idNum = typeof rawId === "number" ? rawId : Number(String(rawId || "").trim());
+        if (!Number.isInteger(idNum) || idNum < 1 || idNum > 32) {
+          issues.push((index + 1) + "件目: id は 1〜32 の整数で指定してください。");
+        } else if (seenIds.has(idNum)) {
+          issues.push("teams.id が重複しています（" + String(idNum) + "）。");
+        } else {
+          seenIds.add(idNum);
+        }
+
+        const teamId = normalizeKnockoutTeamId(entry.team);
+        if (!teamId) {
+          issues.push((index + 1) + "件目: team が空です。");
+        }
+      });
+
+      for (let id = 1; id <= 32; id += 1) {
+        if (!seenIds.has(id)) {
+          issues.push("teams.id " + String(id) + " がありません。");
+        }
+      }
+
+      return issues;
+    }
+
+    function sanitizeKnockoutPayload(payload) {
+      const safe = { teams: [] };
+      if (!payload || typeof payload !== "object" || !Array.isArray(payload.teams)) {
+        return safe;
+      }
+
+      const byId = new Map();
+      payload.teams.forEach((entry) => {
+        if (!entry || typeof entry !== "object") return;
+        const rawId = entry.id;
+        const idNum = typeof rawId === "number" ? rawId : Number(String(rawId || "").trim());
+        const teamId = normalizeKnockoutTeamId(entry.team);
+        if (!Number.isInteger(idNum) || idNum < 1 || idNum > 32) return;
+        if (!teamId) return;
+        if (!byId.has(idNum)) {
+          byId.set(idNum, teamId);
+        }
+      });
+
+      safe.teams = Array.from(byId.entries())
+        .sort((a, b) => a[0] - b[0])
+        .map(([id, team]) => ({ id, team }));
+
+      return safe;
+    }
+
     function applyTeamsPayload(payload) {
       const issues = validateTeamsPayload(payload);
       if (issues.length > 0) {
@@ -2682,6 +3145,16 @@
       return { ok: true, issues: [] };
     }
 
+    function applyDefaultKnockoutPayload(payload) {
+      const issues = validateKnockoutPayload(payload);
+      if (issues.length > 0) {
+        return { ok: false, issues };
+      }
+
+      defaultKnockout = sanitizeKnockoutPayload(payload);
+      return { ok: true, issues: [] };
+    }
+
     function loadTeamsPayload() {
       const defaultPayload = getEmbeddedDefaultTeamsPayload();
       const defaultIssues = validateTeamsPayload(defaultPayload);
@@ -2705,6 +3178,15 @@
       const defaultIssues = validateDefaultPicksPayload(defaultPayload);
       if (defaultIssues.length > 0) {
         throw new Error("埋め込み選択チーム初期値JSONが不正です: " + defaultIssues.join(" / "));
+      }
+      return defaultPayload;
+    }
+
+    function loadDefaultKnockoutPayload() {
+      const defaultPayload = getEmbeddedDefaultKnockoutPayload();
+      const defaultIssues = validateKnockoutPayload(defaultPayload);
+      if (defaultIssues.length > 0) {
+        throw new Error("埋め込みトーナメントJSONが不正です: " + defaultIssues.join(" / "));
       }
       return defaultPayload;
     }
@@ -2865,6 +3347,623 @@
         default:
           return "未設定";
       }
+    }
+
+    function setKnockoutStatus(message, kind) {
+      const el = document.getElementById("knockout-status");
+      if (!el) return;
+      el.textContent = message;
+      el.className = "status" + (kind ? " " + kind : "");
+    }
+
+    function parseKnockoutScore(scoreText) {
+      const score = String(scoreText || "").trim();
+      if (!score) return null;
+
+      const matched = score.match(/^(\d+)\s*[-:：－]\s*(\d+)$/);
+      if (!matched) return null;
+
+      return {
+        home: Number(matched[1]),
+        away: Number(matched[2])
+      };
+    }
+
+    function findEmbeddedKnockoutScore(homeId, awayId) {
+      if (!homeId || !awayId) return null;
+      const matches = Array.isArray(embeddedCompletedMatches) ? embeddedCompletedMatches : [];
+      for (let index = 0; index < matches.length; index += 1) {
+        const item = matches[index];
+        if (!item || typeof item !== "object") continue;
+
+        if (item.homeId === homeId && item.awayId === awayId) {
+          return {
+            score: String(item.homeScore) + "-" + String(item.awayScore),
+            homeScore: item.homeScore,
+            awayScore: item.awayScore,
+            homeDisplay: item.homeDisplayScore || String(item.homeScore),
+            awayDisplay: item.awayDisplayScore || String(item.awayScore),
+            winnerSide: item.winnerSide || null,
+            kickoff: item.kickoff || ""
+          };
+        }
+
+        if (item.homeId === awayId && item.awayId === homeId) {
+          const reversedWinnerSide = item.winnerSide === "home"
+            ? "away"
+            : (item.winnerSide === "away" ? "home" : null);
+
+          return {
+            score: String(item.awayScore) + "-" + String(item.homeScore),
+            homeScore: item.awayScore,
+            awayScore: item.homeScore,
+            homeDisplay: item.awayDisplayScore || String(item.awayScore),
+            awayDisplay: item.homeDisplayScore || String(item.homeScore),
+            winnerSide: reversedWinnerSide,
+            kickoff: item.kickoff || ""
+          };
+        }
+      }
+
+      return null;
+    }
+
+    function getKnockoutTournamentNo(roundKey, matchIndex, isThirdPlace) {
+      if (isThirdPlace === true) return 31;
+
+      if (roundKey === "round32") return matchIndex + 1;
+      if (roundKey === "round16") return 17 + matchIndex;
+      if (roundKey === "quarterfinal") return 25 + matchIndex;
+      if (roundKey === "semifinal") return 29 + matchIndex;
+      if (roundKey === "final") return 32;
+      return null;
+    }
+
+    function findEmbeddedKnockoutKickoffByNo(tournamentNo) {
+      const no = Number(tournamentNo);
+      if (!Number.isInteger(no) || no < 1 || no > 32) return "";
+      if (!(embeddedKnockoutKickoffByNo instanceof Map)) return "";
+      return String(embeddedKnockoutKickoffByNo.get(no) || "").trim();
+    }
+
+    function findEmbeddedKnockoutKickoff(homeId, awayId) {
+      if (!homeId || !awayId) return "";
+
+      const fixtures = Array.isArray(embeddedKnockoutFixtures) ? embeddedKnockoutFixtures : [];
+      for (let index = 0; index < fixtures.length; index += 1) {
+        const item = fixtures[index];
+        if (!item || typeof item !== "object") continue;
+
+        if (
+          (item.homeId === homeId && item.awayId === awayId)
+          || (item.homeId === awayId && item.awayId === homeId)
+        ) {
+          return item.kickoff || "";
+        }
+      }
+
+      return "";
+    }
+
+    function buildResolvedKnockoutData() {
+      const seedEntries = Array.isArray(defaultKnockout && defaultKnockout.teams)
+        ? defaultKnockout.teams
+        : [];
+
+      const teamBySeed = new Map();
+      seedEntries.forEach((entry) => {
+        if (!entry || typeof entry !== "object") return;
+        const idNum = typeof entry.id === "number" ? entry.id : Number(String(entry.id || "").trim());
+        const teamId = normalizeKnockoutTeamId(entry.team);
+        if (!Number.isInteger(idNum) || idNum < 1 || idNum > 32) return;
+        if (!teamId) return;
+        teamBySeed.set(idNum, teamId);
+      });
+
+      const roundDefs = [
+        { key: "round32", label: "ラウンド32", count: 16 },
+        { key: "round16", label: "ラウンド16", count: 8 },
+        { key: "quarterfinal", label: "準々決勝", count: 4 },
+        { key: "semifinal", label: "準決勝", count: 2 },
+        { key: "final", label: "決勝", count: 1 }
+      ];
+
+      let matchSerial = 1;
+      const rounds = roundDefs.map((def) => {
+        const matches = Array.from({ length: def.count }, () => ({
+          id: "M" + String(matchSerial++),
+          resolvedHome: "",
+          resolvedAway: "",
+          score: "",
+          homeDisplayScore: "-",
+          awayDisplayScore: "-",
+          kickoff: "",
+          winnerId: "",
+          loserId: "",
+          nextMatchId: "",
+          nextSlot: "home",
+          loserNextMatchId: "",
+          loserNextSlot: "home"
+        }));
+
+        return {
+          key: def.key,
+          label: def.label,
+          matches
+        };
+      });
+
+      const firstRound = rounds[0] ? rounds[0].matches : [];
+      firstRound.forEach((match, index) => {
+        const homeSeed = index * 2 + 1;
+        const awaySeed = homeSeed + 1;
+        match.resolvedHome = normalizeKnockoutTeamId(teamBySeed.get(homeSeed));
+        match.resolvedAway = normalizeKnockoutTeamId(teamBySeed.get(awaySeed));
+      });
+
+      for (let roundIndex = 0; roundIndex < rounds.length - 1; roundIndex += 1) {
+        const currentMatches = rounds[roundIndex].matches;
+        const nextMatches = rounds[roundIndex + 1].matches;
+
+        currentMatches.forEach((match, matchIndex) => {
+          const target = nextMatches[Math.floor(matchIndex / 2)];
+          if (!target) return;
+          match.nextMatchId = target.id;
+          match.nextSlot = matchIndex % 2 === 0 ? "home" : "away";
+        });
+      }
+
+      const semifinalMatches = rounds[3] ? rounds[3].matches : [];
+      const finalRoundMatches = rounds[4] ? rounds[4].matches : [];
+      const thirdPlaceMatch = {
+        id: "M" + String(matchSerial++),
+        resolvedHome: "",
+        resolvedAway: "",
+        score: "",
+        homeDisplayScore: "-",
+        awayDisplayScore: "-",
+        kickoff: "",
+        winnerId: "",
+        loserId: "",
+        nextMatchId: "",
+        nextSlot: "home",
+        loserNextMatchId: "",
+        loserNextSlot: "home",
+        matchLabel: "3位決定戦"
+      };
+
+      semifinalMatches.forEach((match, index) => {
+        match.loserNextMatchId = thirdPlaceMatch.id;
+        match.loserNextSlot = index % 2 === 0 ? "home" : "away";
+      });
+
+      rounds.forEach((round, roundIndex) => {
+        const nextMatches = roundIndex < rounds.length - 1 ? rounds[roundIndex + 1].matches : null;
+
+        round.matches.forEach((match, matchIndex) => {
+          match.tournamentNo = getKnockoutTournamentNo(round.key, matchIndex, false);
+          match.kickoff = findEmbeddedKnockoutKickoffByNo(match.tournamentNo)
+            || findEmbeddedKnockoutKickoff(match.resolvedHome, match.resolvedAway)
+            || "";
+          const scoreData = findEmbeddedKnockoutScore(match.resolvedHome, match.resolvedAway);
+          if (scoreData) {
+            match.score = scoreData.score;
+            match.homeDisplayScore = scoreData.homeDisplay || "-";
+            match.awayDisplayScore = scoreData.awayDisplay || "-";
+            match.kickoff = scoreData.kickoff || match.kickoff;
+            if (scoreData.winnerSide === "home") {
+              match.winnerId = match.resolvedHome;
+              match.loserId = match.resolvedAway;
+            } else if (scoreData.winnerSide === "away") {
+              match.winnerId = match.resolvedAway;
+              match.loserId = match.resolvedHome;
+            }
+          }
+
+          if (nextMatches && match.winnerId) {
+            const target = nextMatches[Math.floor(matchIndex / 2)];
+            if (!target) return;
+            if (matchIndex % 2 === 0) {
+              target.resolvedHome = match.winnerId;
+            } else {
+              target.resolvedAway = match.winnerId;
+            }
+          }
+
+          if (round.key === "semifinal" && match.loserId) {
+            if (matchIndex % 2 === 0) {
+              thirdPlaceMatch.resolvedHome = match.loserId;
+            } else {
+              thirdPlaceMatch.resolvedAway = match.loserId;
+            }
+          }
+        });
+      });
+
+      thirdPlaceMatch.tournamentNo = getKnockoutTournamentNo("final", 1, true);
+      thirdPlaceMatch.kickoff = findEmbeddedKnockoutKickoffByNo(thirdPlaceMatch.tournamentNo)
+        || findEmbeddedKnockoutKickoff(thirdPlaceMatch.resolvedHome, thirdPlaceMatch.resolvedAway)
+        || "";
+      const thirdScoreData = findEmbeddedKnockoutScore(thirdPlaceMatch.resolvedHome, thirdPlaceMatch.resolvedAway);
+      if (thirdScoreData) {
+        thirdPlaceMatch.score = thirdScoreData.score;
+        thirdPlaceMatch.homeDisplayScore = thirdScoreData.homeDisplay || "-";
+        thirdPlaceMatch.awayDisplayScore = thirdScoreData.awayDisplay || "-";
+        thirdPlaceMatch.kickoff = thirdScoreData.kickoff || thirdPlaceMatch.kickoff;
+        if (thirdScoreData.winnerSide === "home") {
+          thirdPlaceMatch.winnerId = thirdPlaceMatch.resolvedHome;
+        } else if (thirdScoreData.winnerSide === "away") {
+          thirdPlaceMatch.winnerId = thirdPlaceMatch.resolvedAway;
+        }
+
+        if (thirdPlaceMatch.winnerId) {
+          thirdPlaceMatch.loserId = thirdPlaceMatch.winnerId === thirdPlaceMatch.resolvedHome
+            ? thirdPlaceMatch.resolvedAway
+            : thirdPlaceMatch.resolvedHome;
+        }
+      }
+
+      if (finalRoundMatches.length > 0) {
+        finalRoundMatches[0].matchLabel = "決勝";
+        finalRoundMatches[0].tournamentNo = getKnockoutTournamentNo("final", 0, false);
+        finalRoundMatches[0].kickoff = findEmbeddedKnockoutKickoffByNo(finalRoundMatches[0].tournamentNo)
+          || finalRoundMatches[0].kickoff
+          || "";
+      }
+      finalRoundMatches.push(thirdPlaceMatch);
+
+      return { rounds };
+    }
+
+    function buildKnockoutTeamHtml(teamId, teamScore, isWinner) {
+      const scoreLabel = String(teamScore || "-");
+
+      if (!teamId) {
+        return "<div class='knockout-team-main'>"
+          + "<div class='knockout-team-name'>未定</div>"
+          + "</div>"
+          + "<div class='knockout-team-state'>" + escapeHtml(scoreLabel) + "</div>";
+      }
+
+      const team = teamMap.get(teamId);
+      const teamName = team && team.name ? team.name : teamId;
+      const owners = defaultPickOwnersByTeamId.get(teamId) || [];
+      const ownerLabel = owners.length > 0 ? "（" + owners.join("、") + "）" : "";
+      const isFavorite = owners.some((ownerName) => {
+        const participant = state.participants.find((p) => p.name === ownerName);
+        return participant && participant.favorite === teamId;
+      });
+      const favoriteIcon = isFavorite ? "★" : "";
+      const teamDisplayLabel = teamName + ownerLabel + favoriteIcon;
+      const teamNameHtml = team && team.id
+        ? "<a href='#' class='team-link' onclick='openParticipantPointsByTeam(\"" + team.id + "\"); return false;'>"
+          + teamDisplayLabel
+          + "</a>"
+        : teamDisplayLabel;
+
+      return "<div class='knockout-team-main'>"
+        + "<div class='knockout-team-name'>" + teamNameHtml + "</div>"
+        + "</div>"
+        + "<div class='knockout-team-state'>" + escapeHtml(scoreLabel) + "</div>";
+    }
+
+    function getKnockoutLinePoint(element, side, container) {
+      if (!element || !container) return null;
+      const rect = element.getBoundingClientRect();
+      const containerRect = container.getBoundingClientRect();
+
+      const x = (side === "right" ? rect.right : rect.left) - containerRect.left + container.scrollLeft;
+      const y = rect.top + (rect.height / 2) - containerRect.top + container.scrollTop;
+
+      return { x, y };
+    }
+
+    function positionKnockoutBracket() {
+      const boardEl = document.getElementById("knockout-board");
+      if (!boardEl) return;
+
+      const matchElements = Array.from(boardEl.querySelectorAll("[data-match-id]"));
+      if (matchElements.length === 0) return;
+
+      const matchById = new Map();
+      matchElements.forEach(function(el) {
+        const id = el.getAttribute("data-match-id");
+        if (id) matchById.set(id, el);
+      });
+
+      // リセット
+      boardEl.querySelectorAll(".knockout-round-list").forEach(function(el) {
+        el.style.position = "";
+        el.style.height = "";
+      });
+      matchById.forEach(function(el) {
+        el.style.position = "";
+        el.style.top = "";
+        el.style.width = "";
+      });
+
+      // feeder map: targetMatchId -> [sourceEl, ...]
+      const feedersByTarget = new Map();
+      matchElements.forEach(function(sourceEl) {
+        var nextId = sourceEl.getAttribute("data-next-match-id") || "";
+        if (nextId) {
+          if (!feedersByTarget.has(nextId)) feedersByTarget.set(nextId, []);
+          feedersByTarget.get(nextId).push(sourceEl);
+        }
+        var loserNextId = sourceEl.getAttribute("data-loser-next-match-id") || "";
+        if (loserNextId) {
+          if (!feedersByTarget.has(loserNextId)) feedersByTarget.set(loserNextId, []);
+          feedersByTarget.get(loserNextId).push(sourceEl);
+        }
+      });
+
+      // DOM変更前に全試合の中心Y座標をスナップショット
+      var centerYById = new Map();
+      matchById.forEach(function(el, id) {
+        var rect = el.getBoundingClientRect();
+        centerYById.set(id, rect.top + rect.height / 2);
+      });
+
+      // ラウンドを順番に処理（ラウンド0 = ラウンド32はそのまま）
+      var rounds = Array.from(boardEl.querySelectorAll(".knockout-round"));
+      rounds.forEach(function(roundEl, roundIndex) {
+        if (roundIndex === 0) return;
+
+        var listEl = roundEl.querySelector(".knockout-round-list");
+        if (!listEl) return;
+
+        var roundMatches = Array.from(roundEl.querySelectorAll("[data-match-id]"));
+        if (roundMatches.length === 0) return;
+
+        listEl.style.position = "relative";
+        var listRect = listEl.getBoundingClientRect();
+
+        var minTop = 0;
+        var maxBottom = 0;
+
+        roundMatches.forEach(function(matchEl) {
+          var matchId = matchEl.getAttribute("data-match-id");
+          var matchHeight = matchEl.getBoundingClientRect().height;
+          var sources = feedersByTarget.get(matchId) || [];
+          var targetTop;
+
+          if (sources.length >= 2) {
+            var centerYs = sources.map(function(s) {
+              return centerYById.get(s.getAttribute("data-match-id")) || 0;
+            });
+            var minCY = Math.min.apply(null, centerYs);
+            var maxCY = Math.max.apply(null, centerYs);
+            var midCY = (minCY + maxCY) / 2;
+            targetTop = midCY - listRect.top - matchHeight / 2;
+          } else if (sources.length === 1) {
+            var sCY = centerYById.get(sources[0].getAttribute("data-match-id")) || 0;
+            targetTop = sCY - listRect.top - matchHeight / 2;
+          } else {
+            targetTop = minTop;
+          }
+
+          targetTop = Math.max(Math.round(targetTop), minTop);
+
+          matchEl.style.position = "absolute";
+          matchEl.style.top = targetTop + "px";
+          matchEl.style.width = "100%";
+
+          // 次ラウンドのために更新
+          centerYById.set(matchId, listRect.top + targetTop + matchHeight / 2);
+
+          minTop = targetTop + matchHeight + 10;
+          maxBottom = Math.max(maxBottom, targetTop + matchHeight);
+        });
+
+        listEl.style.height = Math.round(maxBottom) + "px";
+      });
+    }
+
+    function drawKnockoutConnections() {
+      const scrollEl = document.getElementById("knockout-scroll");
+      const boardEl = document.getElementById("knockout-board");
+      const svgEl = document.getElementById("knockout-lines");
+      if (!scrollEl || !boardEl || !svgEl) return;
+
+      const boardWidth = boardEl.scrollWidth;
+      const boardHeight = boardEl.scrollHeight;
+
+      svgEl.setAttribute("width", String(boardWidth));
+      svgEl.setAttribute("height", String(boardHeight));
+      svgEl.setAttribute("viewBox", "0 0 " + String(boardWidth) + " " + String(boardHeight));
+      svgEl.innerHTML = "";
+
+      const matchElements = Array.from(boardEl.querySelectorAll("[data-match-id]"));
+      const matchById = new Map();
+      matchElements.forEach((matchEl) => {
+        const matchId = String(matchEl.getAttribute("data-match-id") || "").trim();
+        if (matchId) matchById.set(matchId, matchEl);
+      });
+
+      const createPath = (pathData, isLoserRoute) => {
+        const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        path.setAttribute("d", pathData);
+        path.setAttribute("class", "knockout-line" + (isLoserRoute ? " loser" : ""));
+        svgEl.appendChild(path);
+      };
+
+      const getSourcePoint = (sourceEl, targetSlot, isLoserRoute) => {
+        let sourceTeamEl = null;
+        if (isLoserRoute) {
+          sourceTeamEl = sourceEl.querySelector(".knockout-team.is-loser");
+        } else {
+          sourceTeamEl = sourceEl.querySelector(".knockout-team.is-winner");
+        }
+
+        if (!sourceTeamEl) {
+          sourceTeamEl = sourceEl.querySelector(".knockout-team[data-slot='" + (targetSlot === "away" ? "away" : "home") + "']");
+        }
+
+        if (!sourceTeamEl) {
+          sourceTeamEl = sourceEl;
+        }
+
+        return getKnockoutLinePoint(sourceTeamEl, "right", scrollEl);
+      };
+
+      const getTargetSlotPoint = (targetEl, targetSlot) => {
+        const targetTeamEl = targetEl.querySelector(".knockout-team[data-slot='" + (targetSlot === "away" ? "away" : "home") + "']") || targetEl;
+        return getKnockoutLinePoint(targetTeamEl, "left", scrollEl);
+      };
+
+      const getTargetCenterPoint = (targetEl) => {
+        return getKnockoutLinePoint(targetEl, "left", scrollEl);
+      };
+
+      const incomingByTarget = new Map();
+      matchElements.forEach((matchEl) => {
+        const sourceMatchId = String(matchEl.getAttribute("data-match-id") || "").trim();
+        if (!sourceMatchId) return;
+
+        const nextMatchId = String(matchEl.getAttribute("data-next-match-id") || "").trim();
+        const nextSlot = String(matchEl.getAttribute("data-next-slot") || "home").trim();
+        if (nextMatchId) {
+          if (!incomingByTarget.has(nextMatchId)) incomingByTarget.set(nextMatchId, []);
+          incomingByTarget.get(nextMatchId).push({
+            sourceMatchId,
+            targetSlot: nextSlot,
+            isLoserRoute: false
+          });
+        }
+
+        const loserNextMatchId = String(matchEl.getAttribute("data-loser-next-match-id") || "").trim();
+        const loserNextSlot = String(matchEl.getAttribute("data-loser-next-slot") || "home").trim();
+        if (loserNextMatchId) {
+          if (!incomingByTarget.has(loserNextMatchId)) incomingByTarget.set(loserNextMatchId, []);
+          incomingByTarget.get(loserNextMatchId).push({
+            sourceMatchId,
+            targetSlot: loserNextSlot,
+            isLoserRoute: true
+          });
+        }
+      });
+
+      incomingByTarget.forEach((routes, targetMatchId) => {
+        const targetEl = matchById.get(targetMatchId);
+        if (!targetEl || routes.length === 0) return;
+
+        const points = routes
+          .map((route) => {
+            const sourceEl = matchById.get(route.sourceMatchId);
+            if (!sourceEl) return null;
+            const from = getSourcePoint(sourceEl, route.targetSlot, route.isLoserRoute);
+            if (!from) return null;
+            return { route, from };
+          })
+          .filter((x) => !!x);
+
+        if (points.length === 0) return;
+
+        if (points.length === 1) {
+          const point = points[0];
+          const to = getTargetSlotPoint(targetEl, point.route.targetSlot);
+          if (!to) return;
+
+          const midX = point.from.x + Math.max(14, (to.x - point.from.x) * 0.5);
+          const pathData = "M " + point.from.x + " " + point.from.y
+            + " H " + midX
+            + " V " + to.y
+            + " H " + to.x;
+          createPath(pathData, point.route.isLoserRoute);
+          return;
+        }
+
+        const targetCenter = getTargetCenterPoint(targetEl);
+        if (!targetCenter) return;
+
+        points.sort((a, b) => a.from.y - b.from.y);
+        const yTop = points[0].from.y;
+        const yBottom = points[points.length - 1].from.y;
+        const yMid = targetCenter.y;
+        const maxFromX = Math.max.apply(null, points.map((x) => x.from.x));
+        let mergeX = maxFromX + 14;
+        const maxMergeX = targetCenter.x - 16;
+        if (mergeX > maxMergeX) {
+          mergeX = maxFromX + Math.max(6, (targetCenter.x - maxFromX) * 0.45);
+        }
+
+        points.forEach((point) => {
+          const branchPath = "M " + point.from.x + " " + point.from.y
+            + " H " + mergeX;
+          createPath(branchPath, point.route.isLoserRoute);
+        });
+
+        const allLoserRoute = points.every((x) => x.route.isLoserRoute === true);
+        const trunkPath = "M " + mergeX + " " + yTop
+          + " V " + yBottom;
+        createPath(trunkPath, allLoserRoute);
+
+        const outPath = "M " + mergeX + " " + yMid
+          + " H " + targetCenter.x;
+        createPath(outPath, allLoserRoute);
+      });
+    }
+
+    function renderKnockoutBracket() {
+      const root = document.getElementById("knockout-board");
+      if (!root) return;
+
+      const seededTeams = defaultKnockout && Array.isArray(defaultKnockout.teams)
+        ? defaultKnockout.teams
+        : [];
+
+      if (seededTeams.length === 0) {
+        root.innerHTML = "";
+        setKnockoutStatus("", "");
+        drawKnockoutConnections();
+        return;
+      }
+
+      const resolved = buildResolvedKnockoutData();
+      setKnockoutStatus("", "");
+
+      root.innerHTML = resolved.rounds
+        .map((round) => {
+          const matchesHtml = round.matches
+            .map((match, index) => {
+              const homeWinner = match.winnerId && match.winnerId === match.resolvedHome;
+              const awayWinner = match.winnerId && match.winnerId === match.resolvedAway;
+
+              return "<article class='knockout-match'"
+                + " data-match-id='" + escapeHtml(match.id) + "'"
+                + " data-tournament-no='" + escapeHtml(String(match.tournamentNo || "")) + "'"
+                + " data-next-match-id='" + escapeHtml(match.nextMatchId || "") + "'"
+                + " data-next-slot='" + escapeHtml(match.nextSlot || "home") + "'"
+                + " data-loser-next-match-id='" + escapeHtml(match.loserNextMatchId || "") + "'"
+                + " data-loser-next-slot='" + escapeHtml(match.loserNextSlot || "home") + "'"
+                + ">"
+                + "<div class='knockout-match-head'>"
+                + "<span class='knockout-match-kind'>" + escapeHtml(match.matchLabel || "") + "</span>"
+                + "<span class='knockout-match-score'>" + escapeHtml(match.kickoff || "-") + "</span>"
+                + "</div>"
+                + "<div class='knockout-team" + (homeWinner ? " is-winner" : (match.resolvedHome ? " is-loser" : "")) + "' data-slot='home'>"
+                + buildKnockoutTeamHtml(match.resolvedHome, match.homeDisplayScore || "-", homeWinner)
+                + "</div>"
+                + "<div class='knockout-team" + (awayWinner ? " is-winner" : (match.resolvedAway ? " is-loser" : "")) + "' data-slot='away'>"
+                + buildKnockoutTeamHtml(match.resolvedAway, match.awayDisplayScore || "-", awayWinner)
+                + "</div>"
+                + "</article>";
+            })
+            .join("");
+
+          return "<section class='knockout-round'>"
+            + "<h3 class='knockout-round-title'>" + escapeHtml(round.label) + "</h3>"
+            + "<div class='knockout-round-list'>" + matchesHtml + "</div>"
+            + "</section>";
+        })
+        .join("");
+
+          positionKnockoutBracket();
+          drawKnockoutConnections();
+          window.requestAnimationFrame(function() {
+            positionKnockoutBracket();
+            drawKnockoutConnections();
+          });
     }
 
     function getTeamStage(teamId) {
@@ -3304,6 +4403,102 @@
       });
     }
 
+    function openKnockoutStage(stageLabel) {
+      const label = typeof stageLabel === "string" ? stageLabel.trim() : "";
+      if (!label) return;
+
+      showTab("knockout");
+
+      window.requestAnimationFrame(() => {
+        const board = document.getElementById("knockout-board");
+        const section = document.getElementById("knockout");
+        if (!section) return;
+
+        const normalizedLabel = label === "決勝" ? "決勝" : label;
+        let target = null;
+
+        if (normalizedLabel === "ラウンド32"
+          || normalizedLabel === "ラウンド16"
+          || normalizedLabel === "準々決勝"
+          || normalizedLabel === "準決勝") {
+          const titles = board ? Array.from(board.querySelectorAll(".knockout-round-title")) : [];
+          target = titles.find((el) => String(el.textContent || "").trim() === normalizedLabel) || null;
+        }
+
+        if (!target) {
+          const kinds = board ? Array.from(board.querySelectorAll(".knockout-match-kind")) : [];
+          target = kinds.find((el) => String(el.textContent || "").trim() === normalizedLabel) || null;
+        }
+
+        if (!target) {
+          target = section;
+        }
+
+        const topNav = document.querySelector(".top-nav");
+        const offset = topNav ? topNav.getBoundingClientRect().height + 10 : 10;
+        const top = window.scrollY + target.getBoundingClientRect().top - offset;
+        window.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
+
+        const highlightTarget = target.closest(".knockout-match") || target.closest(".knockout-round") || target;
+        if (highlightTarget) {
+          highlightTarget.classList.add("target-highlight");
+          window.setTimeout(() => highlightTarget.classList.remove("target-highlight"), 1200);
+        }
+      });
+    }
+
+    function openKnockoutMatchByTournamentNo(tournamentNo, fallbackStageLabel) {
+      const no = Number(tournamentNo);
+      if (!Number.isInteger(no) || no < 1 || no > 32) {
+        openKnockoutStage(fallbackStageLabel || "");
+        return;
+      }
+
+      showTab("knockout");
+
+      window.requestAnimationFrame(() => {
+        window.requestAnimationFrame(() => {
+          const section = document.getElementById("knockout");
+          const board = document.getElementById("knockout-board");
+          const scrollWrap = document.getElementById("knockout-scroll");
+          if (!section || !board || !scrollWrap) {
+            openKnockoutStage(fallbackStageLabel || "");
+            return;
+          }
+
+          // Ensure knockout layout is finalized before resolving target position.
+          positionKnockoutBracket();
+          drawKnockoutConnections();
+
+          const target = board.querySelector(".knockout-match[data-tournament-no='" + String(no) + "']");
+          if (!target) {
+            openKnockoutStage(fallbackStageLabel || "");
+            return;
+          }
+
+          target.scrollIntoView({ behavior: "smooth", block: "center", inline: "center" });
+
+          const wrapRect = scrollWrap.getBoundingClientRect();
+          const targetRect = target.getBoundingClientRect();
+          const nextLeft = scrollWrap.scrollLeft
+            + (targetRect.left - wrapRect.left)
+            - ((wrapRect.width - targetRect.width) / 2);
+          const nextTop = scrollWrap.scrollTop
+            + (targetRect.top - wrapRect.top)
+            - ((wrapRect.height - targetRect.height) / 2);
+
+          scrollWrap.scrollTo({
+            left: Math.max(0, Math.round(nextLeft)),
+            top: Math.max(0, Math.round(nextTop)),
+            behavior: "smooth"
+          });
+
+          target.classList.add("target-highlight");
+          window.setTimeout(() => target.classList.remove("target-highlight"), 1200);
+        });
+      });
+    }
+
     function openResultTeam(teamId) {
       if (!teamMap.has(teamId)) return;
       const team = teamMap.get(teamId);
@@ -3444,6 +4639,7 @@
     function renderAll() {
       renderPickTable();
       renderResultsForm();
+      renderKnockoutBracket();
       recalculateAndRender();
     }
 
@@ -3519,6 +4715,12 @@
           throw new Error(applyResultsResult.issues.join(" / "));
         }
 
+        const initialKnockoutPayload = loadDefaultKnockoutPayload();
+        const applyKnockoutResult = applyDefaultKnockoutPayload(initialKnockoutPayload);
+        if (!applyKnockoutResult.ok) {
+          throw new Error(applyKnockoutResult.issues.join(" / "));
+        }
+
         loadState();
         syncResultsWithEmbeddedDefaults();
         normalizeState();
@@ -3526,6 +4728,10 @@
         renderAll();
         loadMatchCsvData();
         loadGoalScorersCsvData();
+        window.addEventListener("resize", function() {
+          positionKnockoutBracket();
+          drawKnockoutConnections();
+        });
         showTab("ranking");
         setAppStatus("", "good");
         clearGlobalError();
