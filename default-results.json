@@ -31,7 +31,7 @@
     "KSA": "eliminated",
     "IRQ": "eliminated",
     "URU": "eliminated",
-    "PAR": "best32",
+    "PAR": "best16",
     "BEL": "best32",
     "EGY": "best32",
     "NZL": "eliminated",
@@ -67,6 +67,7 @@
     "KOR": true,
     "IRN": true,
     "RSA": true,
-    "JPN": true
+    "JPN": true,
+    "GER": true
   }
 }
