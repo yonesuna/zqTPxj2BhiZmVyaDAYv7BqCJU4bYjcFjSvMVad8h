@@ -16,7 +16,7 @@
     "SUI": "best32",
     "CAN": "best16",
     "QAT": "eliminated",
-    "BRA": "best32",
+    "BRA": "best16",
     "MAR": "best32",
     "BIH": "best32",
     "ECU": "best32",
@@ -66,6 +66,7 @@
     "UZB": true,
     "KOR": true,
     "IRN": true,
-    "RSA": true
+    "RSA": true,
+    "JPN": true
   }
 }
