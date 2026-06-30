@@ -7,8 +7,8 @@
     "HAI": "eliminated",
     "TUR": "eliminated",
     "TUN": "eliminated",
-    "FRA": "best32",
-    "NOR": "best32",
+    "FRA": "best16",
+    "NOR": "best16",
     "JOR": "eliminated",
     "PAN": "eliminated",
     "CZE": "eliminated",
@@ -69,6 +69,8 @@
     "RSA": true,
     "JPN": true,
     "GER": true,
-    "NED": true
+    "NED": true,
+    "CIV": true,
+    "SWE": true
   }
 }
