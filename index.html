@@ -2352,7 +2352,7 @@
           return "<tr class='match-row'" + kickoffTsAttr + ">"
             + "<td>" + buildMatchDatetimeCellHtml(group, kickoff, Number.isInteger(tournamentNo) ? tournamentNo : null) + "</td>"
             + "<td" + homeResultClass + ">" + buildMatchTeamCellHtml(homeId) + "</td>"
-            + "<td class='" + scoreColClass + "'>" + escapeHtml(score) + "</td>"
+            + "<td class='" + scoreColClass + "'>" + escapeHtml(score).replace(/(\([^)]+\))/, "<br>$1") + "</td>"
             + "<td" + awayResultClass + ">" + buildMatchTeamCellHtml(awayId) + "</td>"
             + "<td class='match-stadium-col'>" + escapeHtml(stadium) + "</td>"
             + "</tr>";
