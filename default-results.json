@@ -1,6 +1,6 @@
 {
   "teamStages": {
-    "MEX": "best32",
+    "MEX": "best16",
     "USA": "best32",
     "GER": "best32",
     "ARG": "best32",
@@ -71,6 +71,7 @@
     "GER": true,
     "NED": true,
     "CIV": true,
-    "SWE": true
+    "SWE": true,
+    "ECU": true
   }
 }
