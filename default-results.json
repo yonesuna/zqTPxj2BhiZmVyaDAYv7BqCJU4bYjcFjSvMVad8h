@@ -32,12 +32,12 @@
     "IRQ": "eliminated",
     "URU": "eliminated",
     "PAR": "best16",
-    "BEL": "best32",
+    "BEL": "best16",
     "EGY": "best32",
     "NZL": "eliminated",
     "SCO": "eliminated",
     "SEN": "best32",
-    "ENG": "best32",
+    "ENG": "best16",
     "GHA": "best32",
     "COL": "best32",
     "POR": "best32",
@@ -72,6 +72,8 @@
     "NED": true,
     "CIV": true,
     "SWE": true,
-    "ECU": true
+    "ECU": true,
+    "CGO": true,
+    "SEN": true
   }
 }
