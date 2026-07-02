@@ -1,7 +1,7 @@
 {
   "teamStages": {
     "MEX": "best16",
-    "USA": "best32",
+    "USA": "best16",
     "GER": "best32",
     "ARG": "best32",
     "HAI": "eliminated",
@@ -74,6 +74,7 @@
     "SWE": true,
     "ECU": true,
     "CGO": true,
-    "SEN": true
+    "SEN": true,
+    "BIH": true
   }
 }
