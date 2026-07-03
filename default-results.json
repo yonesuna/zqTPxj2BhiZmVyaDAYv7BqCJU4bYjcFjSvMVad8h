@@ -33,7 +33,7 @@
     "URU": "eliminated",
     "PAR": "best16",
     "BEL": "best16",
-    "EGY": "best32",
+    "EGY": "best16",
     "NZL": "eliminated",
     "SCO": "eliminated",
     "SEN": "best32",
@@ -78,6 +78,7 @@
     "BIH": true,
     "CRO": true,
     "ALG": true,
-    "AUT": true
+    "AUT": true,
+    "AUS": true
   }
 }
