@@ -27,7 +27,7 @@
     "SWE": "best32",
     "AUS": "best32",
     "CPV": "best32",
-    "ESP": "best32",
+    "ESP": "best16",
     "KSA": "eliminated",
     "IRQ": "eliminated",
     "URU": "eliminated",
@@ -75,6 +75,7 @@
     "ECU": true,
     "CGO": true,
     "SEN": true,
-    "BIH": true
+    "BIH": true,
+    "AUT": true
   }
 }
