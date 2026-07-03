@@ -17,7 +17,7 @@
     "CAN": "best16",
     "QAT": "eliminated",
     "BRA": "best16",
-    "MAR": "best16",
+    "MAR": "champion",
     "BIH": "best32",
     "ECU": "best32",
     "CIV": "best32",
@@ -77,6 +77,7 @@
     "SEN": true,
     "BIH": true,
     "CRO": true,
-    "ALG": true
+    "ALG": true,
+    "AUT": true
   }
 }
