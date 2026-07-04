@@ -3,7 +3,7 @@
     "MEX": "best16",
     "USA": "best16",
     "GER": "best32",
-    "ARG": "best32",
+    "ARG": "best16",
     "HAI": "eliminated",
     "TUR": "eliminated",
     "TUN": "eliminated",
@@ -26,14 +26,14 @@
     "JPN": "best32",
     "SWE": "best32",
     "AUS": "best32",
-    "CPV": "best32",
-    "ESP": "best32",
+    "CPV": "best16",
+    "ESP": "champion",
     "KSA": "eliminated",
     "IRQ": "eliminated",
     "URU": "eliminated",
     "PAR": "best16",
-    "BEL": "best16",
-    "EGY": "best16",
+    "BEL": "best8",
+    "EGY": "best8",
     "NZL": "eliminated",
     "SCO": "eliminated",
     "SEN": "best32",
@@ -79,6 +79,7 @@
     "CRO": true,
     "ALG": true,
     "AUT": true,
-    "AUS": true
+    "AUS": true,
+    "CPV": true
   }
 }
