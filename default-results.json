@@ -39,7 +39,7 @@
     "SEN": "best32",
     "ENG": "best16",
     "GHA": "best32",
-    "COL": "best32",
+    "COL": "best16",
     "POR": "best16",
     "CRO": "best32",
     "CGO": "best32",
@@ -80,6 +80,7 @@
     "ALG": true,
     "AUT": true,
     "AUS": true,
-    "CPV": true
+    "CPV": true,
+    "GHA": true
   }
 }
