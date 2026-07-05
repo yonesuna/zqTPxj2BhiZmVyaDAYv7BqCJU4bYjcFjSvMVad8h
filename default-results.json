@@ -7,7 +7,7 @@
     "HAI": "eliminated",
     "TUR": "eliminated",
     "TUN": "eliminated",
-    "FRA": "best16",
+    "FRA": "best8",
     "NOR": "best16",
     "JOR": "eliminated",
     "PAN": "eliminated",
@@ -17,7 +17,7 @@
     "CAN": "best16",
     "QAT": "eliminated",
     "BRA": "best16",
-    "MAR": "best16",
+    "MAR": "best8",
     "BIH": "best32",
     "ECU": "best32",
     "CIV": "best32",
@@ -81,6 +81,8 @@
     "AUT": true,
     "AUS": true,
     "CPV": true,
-    "GHA": true
+    "GHA": true,
+    "CAN": true,
+    "PAR": true
   }
 }
