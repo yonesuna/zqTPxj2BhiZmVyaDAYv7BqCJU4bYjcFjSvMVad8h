@@ -8,7 +8,7 @@
     "TUR": "eliminated",
     "TUN": "eliminated",
     "FRA": "best8",
-    "NOR": "best16",
+    "NOR": "best8",
     "JOR": "eliminated",
     "PAN": "eliminated",
     "CZE": "eliminated",
@@ -82,7 +82,8 @@
     "AUS": true,
     "CPV": true,
     "GHA": true,
+    "CAN": true,
     "PAR": true,
-    "CAN": true
+    "BRA": true
   }
 }
