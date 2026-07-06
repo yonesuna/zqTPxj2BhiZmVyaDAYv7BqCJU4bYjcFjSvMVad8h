@@ -751,6 +751,38 @@
       background: #c0c0c0;
     }
 
+    .ranking-row-top1 td.ranking-prob-col,
+    .ranking-row-top2 td.ranking-prob-col,
+    .ranking-row-top1 td.ranking-prob-combined,
+    .ranking-row-top2 td.ranking-prob-combined {
+      font-size: 0.84rem;
+    }
+
+    .ranking-prob-combined-col {
+      display: none;
+    }
+
+    .ranking-prob-combined {
+      display: none;
+    }
+
+    .ranking-prob-subhead {
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+
+    .ranking-prob-main {
+      display: block;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .ranking-prob-sub {
+      display: block;
+      font-size: 0.75rem;
+      color: var(--muted);
+      font-variant-numeric: tabular-nums;
+    }
+
     .issues {
       margin: 8px 0 0;
       padding-left: 16px;
@@ -823,6 +855,18 @@
     @media (max-width: 600px) and (orientation: portrait) {
       .top-nav button[data-tab-btn="picks"] {
         display: none;
+      }
+
+      #ranking .ranking-prob-col {
+        display: none;
+      }
+
+      #ranking .ranking-prob-combined-col {
+        display: table-cell;
+      }
+
+      #ranking .ranking-prob-combined {
+        display: table-cell;
       }
     }
   </style>
@@ -992,8 +1036,9 @@
               <th>参加者</th>
               <th class="num">最終pt</th>
               <th class="center">未確定</th>
-              <th class="num">優勝確率</th>
-              <th class="num">準優勝確率</th>
+              <th class="num ranking-prob-col">優勝確率</th>
+              <th class="num ranking-prob-col">準優勝確率</th>
+              <th class="num ranking-prob-combined-col">優勝確率<br /><span class="ranking-prob-subhead">(準優勝確率)</span></th>
             </tr>
           </thead>
           <tbody id="ranking-body"></tbody>
@@ -4696,8 +4741,12 @@
             + "</a></td>"
             + "<td class='num'><strong>" + formatNum(summary.finalTotal) + "</strong></td>"
             + "<td class='center'>" + summary.unconfirmedCount + "</td>"
-            + "<td class='num'>" + formatNum(participantProb.championProb) + "%</td>"
-            + "<td class='num'>" + formatNum(participantProb.runnerUpProb) + "%</td>"
+            + "<td class='num ranking-prob-col'>" + formatNum(participantProb.championProb) + "%</td>"
+            + "<td class='num ranking-prob-col'>" + formatNum(participantProb.runnerUpProb) + "%</td>"
+            + "<td class='num ranking-prob-combined'>"
+            + "<span class='ranking-prob-main'>" + formatNum(participantProb.championProb) + "%</span>"
+            + "<span class='ranking-prob-sub'>(" + formatNum(participantProb.runnerUpProb) + "%)</span>"
+            + "</td>"
             + "</tr>";
         })
         .join("");
