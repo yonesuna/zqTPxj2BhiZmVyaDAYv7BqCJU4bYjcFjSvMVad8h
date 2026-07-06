@@ -992,6 +992,8 @@
               <th>参加者</th>
               <th class="num">最終pt</th>
               <th class="center">未確定チーム数</th>
+              <th class="num">優勝確率</th>
+              <th class="num">準優勝確率</th>
             </tr>
           </thead>
           <tbody id="ranking-body"></tbody>
@@ -1296,6 +1298,7 @@
     const DEFAULT_KNOCKOUT_JSON_FILE_PATH = "default-knockout.json";
     const MATCH_CSV_FILE_PATH = "embedded-match.csv";
     const GOAL_LIST_CSV_FILE_PATH = "goal_list.csv";
+    const KNOCKOUT_PARTICIPANT_PROBABILITIES_CSV_FILE_PATH = "knockout-participant-probabilities.csv";
     let embeddedCompletedMatches = null;
     let embeddedKnockoutFixtures = null;
     let embeddedKnockoutKickoffByNo = new Map();
@@ -1303,6 +1306,7 @@
     let goalScorerRows = null;
     let goalScorerParseError = "";
     let defaultKnockout = { teams: [] };
+    let participantProbabilities = new Map();
 
     const STAGE_ORDER = {
       eliminated: 0,
@@ -1591,6 +1595,56 @@
       }
 
       return csvText;
+    }
+
+    function getKnockoutParticipantProbabilitiesCsvText() {
+      const request = new XMLHttpRequest();
+      request.open("GET", KNOCKOUT_PARTICIPANT_PROBABILITIES_CSV_FILE_PATH, false);
+      request.send(null);
+
+      const status = Number(request.status);
+      const statusOk = (status >= 200 && status < 300) || status === 0;
+      if (!statusOk) {
+        console.warn("参加者確率CSVの読み込みに失敗しました (HTTP " + status + ")");
+        return "";
+      }
+
+      const csvText = String(request.responseText || "").trim();
+      return csvText;
+    }
+
+    function extractParticipantProbabilitiesFromCsvRows(rows) {
+      const probabilities = new Map();
+      
+      if (!Array.isArray(rows) || rows.length < 2) {
+        return probabilities;
+      }
+
+      const headers = Array.isArray(rows[0]) ? rows[0].map((value) => String(value)) : [];
+      const headerIndex = {};
+      headers.forEach((header, index) => {
+        headerIndex[header] = index;
+      });
+
+      const dataRows = rows.slice(1).filter((row) => Array.isArray(row) && row.length > 0);
+
+      dataRows.forEach((row) => {
+        const participantName = String(typeof row[headerIndex["participant_name"]] === "undefined" ? "" : row[headerIndex["participant_name"]]).trim();
+        const championProbStr = String(typeof row[headerIndex["champion_probability"]] === "undefined" ? "" : row[headerIndex["champion_probability"]]).trim();
+        const runnerUpProbStr = String(typeof row[headerIndex["runner_up_probability"]] === "undefined" ? "" : row[headerIndex["runner_up_probability"]]).trim();
+
+        const championProb = parseFloat(championProbStr) || 0;
+        const runnerUpProb = parseFloat(runnerUpProbStr) || 0;
+
+        if (participantName) {
+          probabilities.set(participantName, {
+            championProb: championProb,
+            runnerUpProb: runnerUpProb
+          });
+        }
+      });
+
+      return probabilities;
     }
 
     function getDefaultResultsJsonText() {
@@ -2492,6 +2546,23 @@
         goalScorerRows = [];
         goalScorerParseError = "CSVファイルの読み込みに失敗しました（" + message + "）。";
         renderGoalScorers();
+      }
+    }
+
+    function loadParticipantProbabilitiesCsvData() {
+      participantProbabilities.clear();
+
+      try {
+        const csvText = getKnockoutParticipantProbabilitiesCsvText();
+        if (!csvText) {
+          return;
+        }
+
+        const parsedRows = parseCsvText(csvText);
+        participantProbabilities = extractParticipantProbabilitiesFromCsvRows(parsedRows);
+        renderRanking();
+      } catch (error) {
+        console.warn("参加者確率データの読み込みに失敗しました:", error);
       }
     }
 
@@ -4615,6 +4686,7 @@
       body.innerHTML = summaryRows
         .map((summary) => {
           const rowClass = summary.rank === 1 ? " class='ranking-row-top1'" : summary.rank === 2 ? " class='ranking-row-top2'" : "";
+          const participantProb = participantProbabilities.get(summary.participant.name) || { championProb: 0, runnerUpProb: 0 };
 
           return "<tr" + rowClass + ">"
             + "<td class='center'>" + escapeHtml(formatRankLabel(summary.rank)) + "</td>"
@@ -4624,6 +4696,8 @@
             + "</a></td>"
             + "<td class='num'><strong>" + formatNum(summary.finalTotal) + "</strong></td>"
             + "<td class='center'>" + summary.unconfirmedCount + "</td>"
+            + "<td class='num'>" + formatNum(participantProb.championProb) + "%</td>"
+            + "<td class='num'>" + formatNum(participantProb.runnerUpProb) + "%</td>"
             + "</tr>";
         })
         .join("");
@@ -4728,6 +4802,7 @@
         renderAll();
         loadMatchCsvData();
         loadGoalScorersCsvData();
+        loadParticipantProbabilitiesCsvData();
         window.addEventListener("resize", function() {
           positionKnockoutBracket();
           drawKnockoutConnections();
