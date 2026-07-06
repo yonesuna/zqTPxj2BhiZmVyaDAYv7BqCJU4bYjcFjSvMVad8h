@@ -37,7 +37,7 @@
     "NZL": "eliminated",
     "SCO": "eliminated",
     "SEN": "best32",
-    "ENG": "best16",
+    "ENG": "best8",
     "GHA": "best32",
     "COL": "best16",
     "POR": "best16",
@@ -84,6 +84,7 @@
     "GHA": true,
     "CAN": true,
     "PAR": true,
-    "BRA": true
+    "BRA": true,
+    "MEX": true
   }
 }
