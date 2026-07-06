@@ -7,7 +7,7 @@
     "HAI": "eliminated",
     "TUR": "eliminated",
     "TUN": "eliminated",
-    "FRA": "best8",
+    "FRA": "champion",
     "NOR": "best8",
     "JOR": "eliminated",
     "PAN": "eliminated",
@@ -27,7 +27,7 @@
     "SWE": "best32",
     "AUS": "best32",
     "CPV": "best32",
-    "ESP": "best16",
+    "ESP": "best8",
     "KSA": "eliminated",
     "IRQ": "eliminated",
     "URU": "eliminated",
@@ -85,6 +85,7 @@
     "CAN": true,
     "PAR": true,
     "BRA": true,
-    "MEX": true
+    "MEX": true,
+    "POR": true
   }
 }
