@@ -3,7 +3,7 @@
     "MEX": "best16",
     "USA": "best16",
     "GER": "best32",
-    "ARG": "best16",
+    "ARG": "best8",
     "HAI": "eliminated",
     "TUR": "eliminated",
     "TUN": "eliminated",
@@ -87,6 +87,7 @@
     "BRA": true,
     "MEX": true,
     "POR": true,
-    "USA": true
+    "USA": true,
+    "EGY": true
   }
 }
