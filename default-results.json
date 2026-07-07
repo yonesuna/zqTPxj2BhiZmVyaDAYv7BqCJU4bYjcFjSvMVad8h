@@ -32,7 +32,7 @@
     "IRQ": "eliminated",
     "URU": "eliminated",
     "PAR": "best16",
-    "BEL": "best16",
+    "BEL": "best8",
     "EGY": "best16",
     "NZL": "eliminated",
     "SCO": "eliminated",
@@ -86,6 +86,7 @@
     "PAR": true,
     "BRA": true,
     "MEX": true,
-    "POR": true
+    "POR": true,
+    "USA": true
   }
 }
