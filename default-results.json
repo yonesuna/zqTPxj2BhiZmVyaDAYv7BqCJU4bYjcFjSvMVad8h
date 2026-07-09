@@ -7,7 +7,7 @@
     "HAI": "eliminated",
     "TUR": "eliminated",
     "TUN": "eliminated",
-    "FRA": "best8",
+    "FRA": "fourth",
     "NOR": "best8",
     "JOR": "eliminated",
     "PAN": "eliminated",
@@ -88,6 +88,7 @@
     "MEX": true,
     "POR": true,
     "USA": true,
-    "EGY": true
+    "EGY": true,
+    "MAR": true
   }
 }
