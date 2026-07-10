@@ -27,7 +27,7 @@
     "SWE": "best32",
     "AUS": "best32",
     "CPV": "best32",
-    "ESP": "best8",
+    "ESP": "fourth",
     "KSA": "eliminated",
     "IRQ": "eliminated",
     "URU": "eliminated",
@@ -90,6 +90,7 @@
     "USA": true,
     "EGY": true,
     "MAR": true,
-    "COL": true
+    "COL": true,
+    "BEL": true
   }
 }
