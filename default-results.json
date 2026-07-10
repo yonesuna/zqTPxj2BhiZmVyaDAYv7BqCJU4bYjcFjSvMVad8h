@@ -13,7 +13,7 @@
     "PAN": "eliminated",
     "CZE": "eliminated",
     "RSA": "best32",
-    "SUI": "best16",
+    "SUI": "best8",
     "CAN": "best16",
     "QAT": "eliminated",
     "BRA": "best16",
@@ -89,6 +89,7 @@
     "POR": true,
     "USA": true,
     "EGY": true,
-    "MAR": true
+    "MAR": true,
+    "COL": true
   }
 }
