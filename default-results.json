@@ -3,7 +3,7 @@
     "MEX": "best16",
     "USA": "best16",
     "GER": "best32",
-    "ARG": "best8",
+    "ARG": "fourth",
     "HAI": "eliminated",
     "TUR": "eliminated",
     "TUN": "eliminated",
@@ -37,7 +37,7 @@
     "NZL": "eliminated",
     "SCO": "eliminated",
     "SEN": "best32",
-    "ENG": "best8",
+    "ENG": "fourth",
     "GHA": "best32",
     "COL": "best16",
     "POR": "best16",
@@ -91,6 +91,8 @@
     "EGY": true,
     "MAR": true,
     "COL": true,
-    "BEL": true
+    "BEL": true,
+    "SUI": true,
+    "NOR": true
   }
 }
