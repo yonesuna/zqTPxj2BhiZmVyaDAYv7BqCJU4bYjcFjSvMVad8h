@@ -27,7 +27,7 @@
     "SWE": "best32",
     "AUS": "best32",
     "CPV": "best32",
-    "ESP": "runner_up",
+    "ESP": "champion",
     "KSA": "eliminated",
     "IRQ": "eliminated",
     "URU": "eliminated",
@@ -37,7 +37,7 @@
     "NZL": "eliminated",
     "SCO": "eliminated",
     "SEN": "best32",
-    "ENG": "fourth",
+    "ENG": "third",
     "GHA": "best32",
     "COL": "best16",
     "POR": "best16",
@@ -93,6 +93,10 @@
     "COL": true,
     "BEL": true,
     "SUI": true,
-    "NOR": true
+    "NOR": true,
+    "FRA": true,
+    "ENG": true,
+    "ARG": true,
+    "ESP": true
   }
 }
